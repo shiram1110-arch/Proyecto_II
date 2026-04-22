@@ -8,6 +8,8 @@ import lombok.*;
 @Entity
 @Table(name = "usuarios")
 @Data
+@AllArgsConstructor
+@NoArgsConstructor
 
 public class Usuario {
     @Id
@@ -23,6 +25,8 @@ public class Usuario {
     private String email;
     @Column(name = "telefono", nullable = false)
     private String telefono;
+    @Column(name = "userName", nullable = false)
+    private String userName;
     @Column(name = "password", nullable = false, unique = true)
     private String password;
     @ManyToOne 
@@ -30,6 +34,8 @@ public class Usuario {
     private Rol rol; 
     @OneToMany(mappedBy = "usuario")
     private List<Reserva> reservas;
+
+    
 
 
 }

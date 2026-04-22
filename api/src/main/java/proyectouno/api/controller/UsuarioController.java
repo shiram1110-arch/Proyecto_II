@@ -8,7 +8,6 @@ import org.springframework.web.server.ResponseStatusException;
 import proyectouno.api.entity.Usuario;
 import proyectouno.api.service.UsuarioService;
 import io.swagger.v3.oas.annotations.Operation;
-
 import io.swagger.v3.oas.annotations.tags.Tag;
 
 @CrossOrigin(origins = "*") // Permitir acceso desde cualquier origen
@@ -48,4 +47,5 @@ public class UsuarioController {
     public void delete(@PathVariable int id) {
         usuarioService.delete(id);
     }
+    
 }
