@@ -16,7 +16,7 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 @CrossOrigin(origins = "*") // Permitir acceso desde cualquier origen
 @Tag(name = "Reservas", description = "API para gestionar reservas") // Grupo en Swagger
 @RestController
-@RequestMapping("/reservas")
+@RequestMapping("/api/reservas")
 public class ReservaController {
     @Autowired
     private ReservaService reservaService;

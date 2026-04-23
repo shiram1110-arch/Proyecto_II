@@ -1,0 +1,104 @@
+body {
+    background: radial-gradient(circle at center, #1a1a1a, #000000);
+    color: white;
+    padding-top: 140px; 
+}
+
+.reserva-detalle {
+    background-color: rgba(20, 20, 20, 0.9);
+    border-radius: 20px;
+    color: white;
+
+    width: 100%;
+    margin: auto;
+    max-width: 1400px;
+}
+
+.titulo {
+    text-shadow: 0 0 10px red;
+}
+
+.btn-main {
+    background-color: #b30000;
+    color: white;
+    border: none;
+}
+
+.btn-main:hover {
+    background-color: #ff1a1a;
+}
+
+.estado {
+    color: orange;
+    font-weight: bold;
+}
+
+.header {
+    width: 100%;
+    background: radial-gradient(circle at center, #1a1a1a, #000000);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 10px 40px;
+    position: fixed;
+    top: 0;
+    left: 0;
+    z-index: 1000;
+}
+
+.logo-header {
+    width: 140px; 
+    filter: drop-shadow(0 0 15px red);
+    transition: 0.3s;
+
+}
+
+.logo-header:hover {
+    transform: scale(1.05);
+    filter: drop-shadow(0 0 25px red);
+}
+
+.menu {
+    display: flex;
+    gap: 40px;
+}
+
+.menu a {
+    text-decoration: none;
+    color: #333;
+    font-weight: 500;
+}
+
+.menu-icon {
+    font-size: 28px;
+    cursor: pointer;
+    color: #333;
+}
+
+.card {
+    background-color: rgba(20, 20, 20, 0.9);
+    border: none;
+    color: white;
+    border-radius: 15px;
+}
+
+.card img {
+    height: 250px;
+    object-fit: cover;
+    box-shadow: 0 0 10px red;
+}
+
+.footer {
+    background: radial-gradient(circle at center, #1a1a1a, #000000);
+    color: white;
+    border-top: 1px solid #222;
+}
+
+.footer img {
+    filter: drop-shadow(0 0 10px red);
+    transition: 0.3s;
+}
+
+.footer img:hover {
+    transform: scale(1.05);
+}

@@ -1,0 +1,60 @@
+body {
+    background: radial-gradient(circle at center, #1a1a1a, #000000);
+    color: white;
+}
+
+.header {
+    background: radial-gradient(circle at center, #1a1a1a, #000000);
+    padding: 15px 0;
+    position: sticky;
+    top: 0;
+    z-index: 1000;
+}
+
+.logo-header {
+    width: 120px;
+    filter: drop-shadow(0 0 10px red);
+    transition: 0.3s;
+}
+
+.logo-header:hover {
+    transform: scale(1.05);
+    filter: drop-shadow(0 0 20px red);
+}
+
+.carousel-item img {
+    height: 100%;
+    width: 100%;
+    object-fit: cover;
+    object-position: center; 
+}
+
+.titulo {
+    text-shadow: 0 0 10px red;
+}
+
+.card-custom {
+    background-color: #111;
+    color: white;
+    border: 1px solid #222;
+    transition: 0.3s;
+}
+
+.card-custom:hover {
+    transform: scale(1.05);
+    border-color: red;
+}
+
+.footer {
+    background: radial-gradient(circle at center, #1a1a1a, #000000);
+    border-top: 1px solid #222;
+}
+
+.footer img {
+    filter: drop-shadow(0 0 10px red);
+    transition: 0.3s;
+}
+
+.footer img:hover {
+    transform: scale(1.05);
+}
