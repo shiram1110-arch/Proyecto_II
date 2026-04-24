@@ -24,7 +24,7 @@ public class ViewController {
 
     @GetMapping("/reservas")
     public String reservas() {
-        return "reservas"; // carga reservas.html
+        return "reservas"; 
     }
 
 }

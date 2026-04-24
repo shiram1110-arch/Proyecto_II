@@ -1,0 +1,27 @@
+GET http://localhost:8080/clases 
+### 
+GET http://localhost:8080/clases 
+### 
+POST http://localhost:8080/clases
+Content-Type: application/json 
+
+{
+  "nombre": "Crossfit",
+  "descripcion": "Clase de crossfit para principiantes",
+  "diaSemana": "MARTES",
+  "horario": "10:00:00",
+  "capacidad": 15
+}
+### 
+PUT http://localhost:8080/clases/1
+Content-Type: application/json 
+
+{
+  "nombre": "Crossfit",
+  "descripcion": "Clase de crossfit para principiantes",
+  "diaSemana": "MARTES",
+  "horario": "10:00:00",
+  "capacidad": 25
+}
+### 
+DELETE http://localhost:8080/clases/1

@@ -46,4 +46,16 @@ public class ClaseService {
         }
     }
 
+    public List<Clase> findByDiaSemana(String diaSemana){
+
+        List<Clase> listaPorDia = new ArrayList<>();
+    
+        for (Clase c : claseRepository.findAll()) {
+        if (c.getDiaSemana().equalsIgnoreCase(diaSemana)) {
+            listaPorDia.add(c);
+        }
+    }
+    return listaPorDia;
+    }
+
 }
