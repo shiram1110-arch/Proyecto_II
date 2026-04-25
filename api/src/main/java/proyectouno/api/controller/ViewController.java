@@ -56,4 +56,11 @@ public class ViewController {
         return "reservas";
     }
 
+    @GetMapping("/crearClase")
+    public String crearClaseVista() {
+        return "crearClase";
+    }
+
+    
+
 }
