@@ -14,7 +14,7 @@ import proyectouno.api.repository.RolRepository;
 public class DataLoader {
 
     @Bean
-    CommandLineRunner initUsers(UsuarioRepository userRepository,RolRepository rolRepository, 
+    CommandLineRunner initUsers(UsuarioRepository userRepository,RolRepository rolRepository,
         PasswordEncoder passwordEncoder) {
 
         return args -> {

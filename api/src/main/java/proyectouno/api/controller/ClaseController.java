@@ -36,6 +36,12 @@ public class ClaseController {
         return claseService.get();
     }
 
+    @GetMapping("/clases/{diaSemana}")
+    @Operation(summary = "Obtener todas las clases según el día", description = "Devuelve una lista de clases según el dia")
+    public List<Clase> getClasesPorDia(@PathVariable String diaSemana){
+        return claseService.getClaseByDiaSemana(diaSemana);
+    }
+
     @GetMapping("/{id}")
     @Operation(summary = "Obtener una clase por ID", description = "Busca una clase en la base de datos según su ID")
 

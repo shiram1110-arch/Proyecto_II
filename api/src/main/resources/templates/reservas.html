@@ -4,67 +4,66 @@
 <head>
     <meta charset="UTF-8">
     <title>Reserva</title>
-
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
-
     <link rel="stylesheet" href="/css/reservas.css">
 </head>
 
 <body>
 
-    <div class="container-fluid px-5">
+<div class="container-fluid px-5">
 
-        <header class="header">
+    <header class="header">
 
-            <div class="logo-container">
-                <img src="/img/logo.png" alt="Smart Fit" class="logo-header">
+        <img src="/img/logo.png" alt="Smart Fit" class="logo-header">
+
+        <nav class="menu">
+            <a href="#">Prueba</a>
+        </nav>
+
+    </header>
+
+    <div class="card reserva-detalle p-4">
+
+        <h2 class="text-center mb-4 titulo">Reserva tu espacio</h2>
+
+        <div class="row">
+
+            <div class="col-md-5">
+                <img src="/img/reserva.png" class="img-fluid rounded" alt="Clase">
             </div>
 
-            <nav class="menu">
-                <a href="#">Prueba</a>
-            </nav>
+            <div class="col-md-7">
 
-            <div class="menu-icon">
-                ☰
-            </div>
-
-        </header>
-
-        <div class="card reserva-detalle p-4">
-
-            <h2 class="text-center mb-4 titulo">
-                Reserva tu espacio
-            </h2>
-
-            <div class="row">
-
-                <div class="col-md-5">
-
-                    <div class="card bg-dark text-white border-0">
-
-                        <img src="/img/rumba.jpg" class="card-img-top" alt="Clase">
-                    </div>
-
+                <div th:if="${clase == null}">
+                    <p>No se encontró la clase</p>
                 </div>
 
-                <div class="col-md-7">
+                <div th:if="${clase != null}">
 
-                    <h3 id="nombreClase">Smart Rumba</h3>
+                    <h2 th:text="${clase.nombre}"></h2>
+                    <p th:text="${clase.descripcion}"></p>
+                    <p th:text="${clase.diaSemana}"></p>
+                    <p th:text="${clase.horario}"></p>
 
-                    <p id="descripcionClase">
-                        Clase de baile con ritmo latino.
-                    </p>
-
-                    <p><strong>Capacidad:</strong> <span id="capacidad">20</span></p>
+                    <p th:text="${clase.capacidad + ' cupos disponibles'}"></p>
 
                     <p>
                         <strong>Estado:</strong>
-                        <span class="estado">Sin reservar</span>
+                        <span th:text="${clase.capacidad > 0 ? 'Disponible' : 'Completo'}"
+                              th:classappend="${clase.capacidad > 0 ? 'estado disponible' : 'estado lleno'}">
+                        </span>
                     </p>
 
-                    <button class="btn btn-main w-100 mt-3">
-                        Reservar
-                    </button>
+                    <div class="d-flex gap-3 mt-4">
+
+                        <a href="/horarioClases" class="btn btn-volver w-50">Volver</a>
+
+                        <button class="btn btn-main w-50"
+                                th:disabled="${clase.capacidad == 0}">
+                            Reservar
+                        </button>
+
+                    </div>
 
                 </div>
 
@@ -74,44 +73,14 @@
 
     </div>
 
-    <script>
-        const params = new URLSearchParams(window.location.search);
-        const clase = params.get("clase");
+</div>
 
-        // Datos simulados
-        const datos = {
-            "Smart Rumba": {
-                img: "/img/rumba.jpg",
-                desc: "Clase de baile con ritmo latino.",
-                cap: 20
-            },
-            "Smart Cycling": {
-                img: "/img/cycling.jpg",
-                desc: "Alta intensidad en bicicleta.",
-                cap: 15
-            },
-            "Smart Zumba": {
-                img: "/img/zumba.jpg",
-                desc: "Cardio divertido con música.",
-                cap: 25
-            }
-        };
-
-        if (datos[clase]) {
-            document.getElementById("nombreClase").innerText = clase;
-            document.getElementById("descripcionClase").innerText = datos[clase].desc;
-            document.getElementById("capacidad").innerText = datos[clase].cap;
-            document.getElementById("imgClase").src = datos[clase].img;
-        }
-    </script>
-
-</body>
 <footer class="footer mt-5 py-4 text-center">
     <div class="container">
         <img src="/img/logo.png" alt="Logo" width="120" class="mb-2">
-        <p class="mb-1">© 2026 VIKINGS</p>
-        <p class="mb-0 small">Todos los derechos reservados</p>
+        <p>© 2026 VIKINGS</p>
     </div>
 </footer>
 
+</body>
 </html>

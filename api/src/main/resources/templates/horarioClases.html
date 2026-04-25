@@ -14,19 +14,15 @@
 
     <div class="container mt-5">
 
-        <header class="header">
+        <header class="header d-flex justify-content-between align-items-center mb-4">
 
             <div class="logo-container">
                 <img src="/img/logo.png" alt="Smart Fit" class="logo-header">
             </div>
 
             <nav class="menu">
-                <a href="#">Prueba</a>
+                <a href="/">Inicio</a>
             </nav>
-
-            <div class="menu-icon">
-                ☰
-            </div>
 
         </header>
 
@@ -37,67 +33,68 @@
         </div>
 
         <div class="dias text-center mb-4">
-            <button class="dia activo">LUN</button>
-            <button class="dia">MAR</button>
-            <button class="dia">MIÉ</button>
-            <button class="dia">JUE</button>
-            <button class="dia">VIE</button>
-            <button class="dia">SÁB</button>
-            <button class="dia">DOM</button>
+            <a href="/horarioClases?diaSemana=LUNES" class="dia"
+                th:classappend="${diaActual == 'LUNES'} ? 'activo' : ''">
+                LUN
+            </a>
+            <a href="/horarioClases?diaSemana=MARTES" class="dia"
+                th:classappend="${diaActual == 'MARTES'} ? 'activo' : ''">
+                MAR
+            </a>
+            <a href="/horarioClases?diaSemana=MIERCOLES" class="dia"
+                th:classappend="${diaActual == 'MIERCOLES'} ? 'activo' : ''">
+                MIÉ
+            </a>
+            <a href="/horarioClases?diaSemana=JUEVES" class="dia"
+                th:classappend="${diaActual == 'JUEVES'} ? 'activo' : ''">
+                JUE
+            </a>
+            <a href="/horarioClases?diaSemana=VIERNES" class="dia"
+                th:classappend="${diaActual == 'VIERNES'} ? 'activo' : ''">
+                VIE
+            </a>
+            <a href="/horarioClases?diaSemana=SABADO" class="dia"
+                th:classappend="${diaActual == 'SABADO'} ? 'activo' : ''">
+                SÁB
+            </a>
+            <a href="/horarioClases?diaSemana=DOMINGO" class="dia"
+                th:classappend="${diaActual == 'DOMINGO'} ? 'activo' : ''">
+                DOM
+            </a>
         </div>
 
         <div class="lista-clases">
 
-            <div class="clase-item">
-                <div class="hora">09:15</div>
+            <div class="clase-item" th:each="clase : ${clases}">
+
+                <div class="hora" th:text="${clase.horario}"></div>
 
                 <div class="info">
-                    <div class="nombre">Smart Rumba</div>
+                    <div class="nombre" th:text="${clase.nombre}"></div>
                 </div>
 
-                <div class="duracion">45min</div>
+                <a th:href="@{/reservas/{idClase}(idClase=${clase.idClase})}" class="btn-mas">
+                    Más
+                </a>
 
-                <button class="btn-mas" onclick="window.location.href='/reservas'">Más</button>
-            </div>
-
-            <div class="clase-item">
-                <div class="hora">09:15</div>
-                <div class="info">
-                    <div class="nombre">Smart Rumba</div>
-                </div>
-                <div class="duracion">45min</div>
-                <button class="btn-mas">Más</button>
-            </div>
-
-            <div class="clase-item">
-                <div class="hora">19:15</div>
-                <div class="info">
-                    <div class="nombre">Smart Cycling</div>
-                </div>
-                <div class="duracion">45min</div>
-                <button class="btn-mas">Más</button>
-            </div>
-
-            <div class="clase-item">
-                <div class="hora">19:15</div>
-                <div class="info">
-                    <div class="nombre">Smart Zumba</div>
-                </div>
-                <div class="duracion">45min</div>
-                <button class="btn-mas">Más</button>
             </div>
 
         </div>
 
-    </div>
-</body>
+        <div class="text-center mt-4" th:if="${#lists.isEmpty(clases)}">
+            <p>No hay clases disponibles para este día</p>
+        </div>
 
-<footer class="footer mt-5 py-4 text-center">
-    <div class="container">
-        <img src="/img/logo.png" alt="Logo" width="120" class="mb-2">
-        <p class="mb-1">© 2026 VIKINGS</p>
-        <p class="mb-0 small">Todos los derechos reservados</p>
     </div>
-</footer>
+
+    <footer class="footer mt-5 py-4 text-center">
+        <div class="container">
+            <img src="/img/logo.png" alt="Logo" width="120" class="mb-2">
+            <p class="mb-1">© 2026 VIKINGS</p>
+            <p class="mb-0 small">Todos los derechos reservados</p>
+        </div>
+    </footer>
+
+</body>
 
 </html>
