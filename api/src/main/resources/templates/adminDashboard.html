@@ -17,7 +17,10 @@
 
     <div class="header d-flex justify-content-between align-items-center px-4 py-2">
         <h4 class="titulo m-0">Panel Administrador</h4>
-        <button class="btn btn-main">Cerrar Sesión</button>
+
+        <button class="btn btn-danger" onclick="window.location.href='/inicio'">
+            Cerrar sesión
+        </button>
     </div>
 
     <div class="container mt-5">
@@ -33,7 +36,7 @@
             <div class="col-md-4">
                 <div class="registro-card p-4 text-center card-hover" onclick="location.href='/usuariosVista'">
                     <h5 class="titulo">Gestionar Usuarios</h5>
-                    <p class="subtitulo">Agregar, Eliminar  y actualizar Usuarios</p>
+                    <p class="subtitulo">Agregar, Eliminar y actualizar Usuarios</p>
                 </div>
             </div>
 
@@ -41,7 +44,14 @@
             <div class="col-md-4">
                 <div class="registro-card p-4 text-center card-hover" onclick="location.href='/clasesVista'">
                     <h5 class="titulo">Gestionar Clases</h5>
-                    <p class="subtitulo">Agregar, Eliminar  y actualizar clases</p>
+                    <p class="subtitulo">Agregar, Eliminar y actualizar clases</p>
+                </div>
+            </div>
+
+            <div class="col-md-4">
+                <div class="registro-card p-4 text-center card-hover" onclick="location.href='/gestionReservas'">
+                    <h5 class="titulo">Gestionar Reservas</h5>
+                    <p class="subtitulo">Agregar, Eliminar y actualizar reservas</p>
                 </div>
             </div>
 

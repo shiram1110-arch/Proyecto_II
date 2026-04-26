@@ -9,17 +9,20 @@ import org.springframework.web.bind.annotation.PathVariable;
 
 import proyectouno.api.entity.Clase;
 import proyectouno.api.service.ClaseService;
+import proyectouno.api.service.ReservaService;
 import proyectouno.api.service.UsuarioService;
 
 @Controller
 public class ViewController {
 
+    private final ReservaService reservaService;
     private final ClaseService claseService;
     private final UsuarioService usuarioService;
 
-    public ViewController(ClaseService claseService, UsuarioService usuarioService) {
+    public ViewController(ClaseService claseService, UsuarioService usuarioService, ReservaService reservaService) {
         this.claseService = claseService;
         this.usuarioService = usuarioService;
+        this.reservaService = reservaService;
     }
 
     @GetMapping("/")
@@ -79,6 +82,12 @@ public class ViewController {
     public String clasesVista(Model model) {
         model.addAttribute("clases", claseService.get());
         return "clasesVista";
+    }
+
+    @GetMapping("/gestionReservas")
+    public String gestionReservas(Model model) {
+        model.addAttribute("reservas", reservaService.get());
+        return "gestionReservas";
     }
 
     @GetMapping("/clases/editar/{id}")

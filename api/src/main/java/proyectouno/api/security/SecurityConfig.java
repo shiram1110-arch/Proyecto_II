@@ -16,7 +16,7 @@ public class SecurityConfig {
                                 .csrf(csrf -> csrf.disable())
                                 .authorizeHttpRequests(auth -> auth
                                                 .requestMatchers("/", "/inicio", "/login", "/formularioVikingNuevo",
-                                                                "/registro", "/usuariosVista","/clasesVista", "/adminDashboard", "/horarioClases", "/reservas/**",
+                                                                "/registro", "/usuariosVista","/clasesVista", "/adminDashboard", "/gestionReservas", "/horarioClases", "/reservas/**",
                                                                 "/crearClase", "/crearUsuario", "/clases/**", "/error",
                                                                 "/img/**", "/css/**", "/js/**")
                                                 .permitAll()
