@@ -75,4 +75,21 @@ public class ViewController {
         return "usuariosVista";
     }
 
+    @GetMapping("/clasesVista")
+    public String clasesVista(Model model) {
+        model.addAttribute("clases", claseService.get());
+        return "clasesVista";
+    }
+
+    @GetMapping("/clases/editar/{id}")
+    public String editarClase(@PathVariable int id, Model model) {
+
+        Clase clase = claseService.getById(id)
+                .orElseThrow(() -> new RuntimeException("Clase no encontrada"));
+
+        model.addAttribute("clase", clase);
+
+        return "crearClase"; 
+    }
+
 }

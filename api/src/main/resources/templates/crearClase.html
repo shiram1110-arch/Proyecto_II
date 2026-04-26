@@ -5,10 +5,10 @@
     <meta charset="UTF-8">
     <title>Crear Clase</title>
 
-    <!-- Bootstrap -->
+    
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
 
-    <!-- Tu CSS -->
+    
     <link rel="stylesheet" href="/css/crearClase.css">
 </head>
 
@@ -24,36 +24,42 @@
                 <p class="subtitulo">Crea una clase en el sistema</p>
             </div>
 
-            
+
             <form id="formClase">
 
+                <input type="hidden" name="idClase" th:value="${clase?.idClase}">
+
                 <div class="mb-3">
-                    <input type="text" name="nombre" class="form-control" placeholder="Nombre de la clase" required>
+                    <input type="text" name="nombre" class="form-control" placeholder="Nombre de la clase"
+                        th:value="${clase?.nombre}" required>
                 </div>
 
                 <div class="mb-3">
-                    <input type="text" name="descripcion" class="form-control" placeholder="Descripción" required>
+                    <input type="text" name="descripcion" class="form-control" placeholder="Descripción"
+                        th:value="${clase?.descripcion}" required>
                 </div>
 
                 <div class="mb-3">
                     <select name="diaSemana" class="form-control" required>
                         <option value="">Día de la semana</option>
-                        <option>Lunes</option>
-                        <option>Martes</option>
-                        <option>Miércoles</option>
-                        <option>Jueves</option>
-                        <option>Viernes</option>
-                        <option>Sábado</option>
-                        <option>Domingo</option>
+
+                        <option value="Lunes" th:selected="${clase?.diaSemana == 'Lunes'}">Lunes</option>
+                        <option value="Martes" th:selected="${clase?.diaSemana == 'Martes'}">Martes</option>
+                        <option value="Miércoles" th:selected="${clase?.diaSemana == 'Miércoles'}">Miércoles</option>
+                        <option value="Jueves" th:selected="${clase?.diaSemana == 'Jueves'}">Jueves</option>
+                        <option value="Viernes" th:selected="${clase?.diaSemana == 'Viernes'}">Viernes</option>
+                        <option value="Sábado" th:selected="${clase?.diaSemana == 'Sábado'}">Sábado</option>
+                        <option value="Domingo" th:selected="${clase?.diaSemana == 'Domingo'}">Domingo</option>
                     </select>
                 </div>
 
                 <div class="mb-3">
-                    <input type="time" name="horario" class="form-control" required>
+                    <input type="time" name="horario" class="form-control" th:value="${clase?.horario}" required>
                 </div>
 
                 <div class="mb-3">
-                    <input type="number" name="capacidad" class="form-control" placeholder="Capacidad" min="1" required>
+                    <input type="number" name="capacidad" class="form-control" placeholder="Capacidad"
+                        th:value="${clase?.capacidad}" min="1" required>
                 </div>
 
                 <button type="submit" class="btn btn-main w-100">
@@ -66,10 +72,12 @@
 
     </div>
 
-    
+
     <script>
         document.getElementById("formClase").addEventListener("submit", function (e) {
             e.preventDefault();
+
+            const id = document.querySelector("[name=idClase]").value;
 
             const data = {
                 nombre: document.querySelector("[name=nombre]").value,
@@ -79,27 +87,33 @@
                 capacidad: parseInt(document.querySelector("[name=capacidad]").value)
             };
 
-            fetch("/clases", {
-                method: "POST",
+            let url = "/clases";
+            let method = "POST";
+
+            
+            if (id) {
+                url = `/clases/${id}`;
+                method = "PUT";
+            }
+
+            fetch(url, {
+                method: method,
                 headers: {
                     "Content-Type": "application/json"
                 },
                 body: JSON.stringify(data)
             })
-            .then(response => {
-                if (!response.ok) {
-                    throw new Error("Error al guardar la clase");
-                }
-                return response.json();
-            })
-            .then(() => {
-                window.location.href = "/horarioClases";
-            })
-            .catch(error => {
-                alert("Error: " + error.message);
-            });
+                .then(res => {
+                    if (!res.ok) throw new Error("Error al guardar");
+                    return res.json();
+                })
+                .then(() => {
+                    window.location.href = "/clasesVista";
+                })
+                .catch(err => alert(err.message));
         });
     </script>
 
 </body>
+
 </html>
