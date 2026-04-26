@@ -9,14 +9,17 @@ import org.springframework.web.bind.annotation.PathVariable;
 
 import proyectouno.api.entity.Clase;
 import proyectouno.api.service.ClaseService;
+import proyectouno.api.service.UsuarioService;
 
 @Controller
 public class ViewController {
 
     private final ClaseService claseService;
+    private final UsuarioService usuarioService;
 
-    public ViewController(ClaseService claseService) {
+    public ViewController(ClaseService claseService, UsuarioService usuarioService) {
         this.claseService = claseService;
+        this.usuarioService = usuarioService;
     }
 
     @GetMapping("/")
@@ -61,6 +64,15 @@ public class ViewController {
         return "crearClase";
     }
 
-    
+    @GetMapping("/adminDashboard")
+    public String adminPanel() {
+        return "adminDashboard";
+    }
+
+    @GetMapping("/usuariosVista")
+    public String usuariosVista(Model model) {
+        model.addAttribute("usuarios", usuarioService.get());
+        return "usuariosVista";
+    }
 
 }
