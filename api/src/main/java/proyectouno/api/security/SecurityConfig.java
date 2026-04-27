@@ -20,6 +20,7 @@ public class SecurityConfig {
                                                                 "/crearClase", "/crearUsuario", "/clases/**", "/error",
                                                                 "/img/**", "/css/**", "/js/**")
                                                 .permitAll()
+                                                .requestMatchers("/registroCompleto/registro").permitAll()
                                                 .requestMatchers("/swagger-ui/**", "/v3/api-docs/**").permitAll()
                                                 .requestMatchers("/img/**").permitAll()
                                                 .requestMatchers("/").authenticated()

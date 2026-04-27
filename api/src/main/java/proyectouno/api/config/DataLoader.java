@@ -18,7 +18,6 @@ public class DataLoader {
         PasswordEncoder passwordEncoder) {
 
         return args -> {
-System.out.println("Iniciando DataLoader...");
             Rol rol = rolRepository.findById(2)
                     .orElseThrow(() -> new RuntimeException("Rol no encontrado"));
 
@@ -39,7 +38,6 @@ System.out.println("Iniciando DataLoader...");
 
                 userRepository.save(u);
 
-                System.out.println("ENTREEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEE..");
 
             }
         };
