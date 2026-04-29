@@ -2,6 +2,6 @@ POST http://localhost:8080/registroCompleto/login
 Content-Type: application/json
 
 {
-    "username": "Runor",
-    "password": "1234"
+    "username": "gh",
+    "password": "123"
 }

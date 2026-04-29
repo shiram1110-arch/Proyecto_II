@@ -62,24 +62,36 @@
                 apellidoUno: document.querySelector("[name=apellidoUno]").value,
                 apellidoDos: document.querySelector("[name=apellidoDos]").value,
                 telefono: document.querySelector("[name=telefono]").value,
-                email: document.querySelector("[name=email]").value
+                email: document.querySelector("[name=email]").value,
+
+                rol: {
+                    idRol: 1
+                }
             };
 
-            fetch("/registroCompleto/registro", {
+            console.log("DATA ENVIADA:", JSON.stringify(data, null, 2));
+
+            fetch("/usuarios", {
                 method: "POST",
                 headers: {
                     "Content-Type": "application/json"
                 },
                 body: JSON.stringify(data)
             })
-                .then(res => {
-                    if (!res.ok) throw new Error("Error en registro");
-                    return res.json();
+                .then(async res => {
+                    const text = await res.text();
+
+                    console.log(JSON.stringify(data, null, 2));
+                    if (!res.ok) throw new Error(text);
+                    return text;
                 })
                 .then(() => {
                     window.location.href = "/horarioClases";
                 })
-                .catch(err => alert(err.message));
+                .catch(err => {
+                    console.error(err);
+                    alert(err.message);
+                });
         });
     </script>
 </body>

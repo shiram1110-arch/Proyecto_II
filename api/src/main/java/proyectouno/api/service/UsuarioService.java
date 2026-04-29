@@ -3,21 +3,40 @@ package proyectouno.api.service;
 import java.util.*;
 
 import org.springframework.http.HttpStatus;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
 
 import lombok.*;
+import proyectouno.api.entity.Rol;
 import proyectouno.api.entity.Usuario;
+import proyectouno.api.repository.RolRepository;
 import proyectouno.api.repository.UsuarioRepository;
+
 
 @Service
 @AllArgsConstructor
 public class UsuarioService {
-    private UsuarioRepository usuarioRepository;
 
-    public Usuario add(Usuario usuario) {
-        return usuarioRepository.save(usuario);
+    private UsuarioRepository usuarioRepository;
+    private RolRepository rolRepository;
+    private PasswordEncoder passwordEncoder;
+
+   public Usuario add(Usuario usuario) {
+
+    if (usuario.getRol() == null || usuario.getRol().getIdRol() == null) {
+        throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "El rol es obligatorio");
     }
+
+    Rol rol = rolRepository.findById(usuario.getRol().getIdRol())
+            .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Rol no existe"));
+
+    usuario.setRol(rol);
+
+    usuario.setPassword(passwordEncoder.encode(usuario.getPassword()));
+
+    return usuarioRepository.save(usuario);
+}
 
     public List<Usuario> get() {
         return usuarioRepository.findAll();
