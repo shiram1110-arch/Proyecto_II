@@ -5,11 +5,14 @@ import io.jsonwebtoken.io.Decoders;
 import io.jsonwebtoken.security.Keys;
 
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Component;
 
 import javax.crypto.SecretKey;
 import java.util.Date;
+import java.util.List;
+import java.util.stream.Collectors;
 
 @Component
 public class JwtUtil {
@@ -21,18 +24,23 @@ public class JwtUtil {
     private long expiration;
 
     private SecretKey getSigningKey() {
-        // Si usas una clave literal larga, conviene pasarla en Base64 real.
-        // Para laboratorio, esto puede funcionar si guardas la clave en Base64.
         byte[] keyBytes = Decoders.BASE64.decode(secret);
         return Keys.hmacShaKeyFor(keyBytes);
     }
 
+    // 🔥 GENERAR TOKEN CON ROLES
     public String generateToken(UserDetails userDetails) {
         Date now = new Date();
         Date expiryDate = new Date(now.getTime() + expiration);
 
+        List<String> roles = userDetails.getAuthorities()
+                .stream()
+                .map(GrantedAuthority::getAuthority)
+                .collect(Collectors.toList());
+
         return Jwts.builder()
                 .subject(userDetails.getUsername())
+                .claim("roles", roles) // 🔥 CLAVE
                 .issuedAt(now)
                 .expiration(expiryDate)
                 .signWith(getSigningKey(), Jwts.SIG.HS256)
@@ -56,7 +64,8 @@ public class JwtUtil {
         return extractExpiration(token).before(new Date());
     }
 
-    private Claims extractAllClaims(String token) {
+    // 🔥 IMPORTANTE: PUBLIC
+    public Claims extractAllClaims(String token) {
         return Jwts.parser()
                 .verifyWith(getSigningKey())
                 .build()

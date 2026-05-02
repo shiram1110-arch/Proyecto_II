@@ -20,6 +20,7 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import proyectouno.api.entity.Clase;
 import proyectouno.api.service.ClaseService;
 
+
 @CrossOrigin(origins = "*") // Permitir acceso desde cualquier origen
 @Tag(name = "Clases", description = "API para gestionar clases")
 // Grupo en Swagger

@@ -13,7 +13,6 @@ import proyectouno.api.entity.Usuario;
 import proyectouno.api.repository.RolRepository;
 import proyectouno.api.repository.UsuarioRepository;
 
-
 @Service
 @AllArgsConstructor
 public class UsuarioService {
@@ -22,21 +21,21 @@ public class UsuarioService {
     private RolRepository rolRepository;
     private PasswordEncoder passwordEncoder;
 
-   public Usuario add(Usuario usuario) {
+    public Usuario add(Usuario usuario) {
 
-    if (usuario.getRol() == null || usuario.getRol().getIdRol() == null) {
-        throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "El rol es obligatorio");
+        if (usuario.getRol() == null || usuario.getRol().getIdRol() == null) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "El rol es obligatorio");
+        }
+
+        Rol rol = rolRepository.findById(usuario.getRol().getIdRol())
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Rol no existe"));
+
+        usuario.setRol(rol);
+
+        usuario.setPassword(passwordEncoder.encode(usuario.getPassword()));
+
+        return usuarioRepository.save(usuario);
     }
-
-    Rol rol = rolRepository.findById(usuario.getRol().getIdRol())
-            .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Rol no existe"));
-
-    usuario.setRol(rol);
-
-    usuario.setPassword(passwordEncoder.encode(usuario.getPassword()));
-
-    return usuarioRepository.save(usuario);
-}
 
     public List<Usuario> get() {
         return usuarioRepository.findAll();
@@ -67,8 +66,9 @@ public class UsuarioService {
         }
     }
 
-    public Optional<Usuario> findByUserName(String userName) {
-    return usuarioRepository.findByUserName(userName);
-}
+    public Usuario findByUsername(String username) {
+        return usuarioRepository.findByUserName(username)
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Usuario no encontrado"));
+    }
 
 }
