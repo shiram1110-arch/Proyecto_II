@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="es">
+
 <head>
     <meta charset="UTF-8">
     <title>Panel Administrador</title>
@@ -10,86 +11,55 @@
 
 <body>
 
-<div class="header d-flex justify-content-between align-items-center px-4 py-2">
-    <h4 class="titulo m-0">Panel Administrador</h4>
+    <div class="header d-flex justify-content-between align-items-center px-4 py-2">
+        <h4 class="titulo m-0">Panel Administrador</h4>
 
-    <button class="btn btn-danger" onclick="logout()">
-        Cerrar sesión
-    </button>
-</div>
-
-<div class="container mt-5">
-
-    <div class="text-center mb-4">
-        <img src="/img/logo.png" class="logo">
-        <p class="subtitulo">Gestión del sistema VIKINGS</p>
+        <button class="btn btn-danger" onclick="logout()">
+            Cerrar sesión
+        </button>
     </div>
 
-    <div class="row g-4 justify-content-center">
+    <div class="container mt-5">
 
-        <div class="col-md-4">
-            <div class="registro-card p-4 text-center card-hover" onclick="location.href='/usuariosVista'">
-                <h5 class="titulo">Gestionar Usuarios</h5>
-                <p class="subtitulo">Agregar, eliminar y actualizar usuarios</p>
-            </div>
+        <div class="text-center mb-4">
+            <img src="/img/logo.png" class="logo">
+            <p class="subtitulo">Gestión del sistema VIKINGS</p>
         </div>
 
-        <div class="col-md-4">
-            <div class="registro-card p-4 text-center card-hover" onclick="location.href='/clasesVista'">
-                <h5 class="titulo">Gestionar Clases</h5>
-                <p class="subtitulo">Agregar, eliminar y actualizar clases</p>
-            </div>
-        </div>
+        <div class="row g-4 justify-content-center">
 
-        <div class="col-md-4">
-            <div class="registro-card p-4 text-center card-hover" onclick="location.href='/gestionReservas'">
-                <h5 class="titulo">Gestionar Reservas</h5>
-                <p class="subtitulo">Agregar, eliminar y actualizar reservas</p>
+            <div class="col-md-4">
+                <div class="registro-card p-4 text-center card-hover" onclick="location.href='/usuariosVista'">
+                    <h5 class="titulo">Gestionar Usuarios</h5>
+                    <p class="subtitulo">Agregar, eliminar y actualizar usuarios</p>
+                </div>
             </div>
+
+            <div class="col-md-4">
+                <div class="registro-card p-4 text-center card-hover" onclick="location.href='/clasesVista'">
+                    <h5 class="titulo">Gestionar Clases</h5>
+                    <p class="subtitulo">Agregar, eliminar y actualizar clases</p>
+                </div>
+            </div>
+
+            <div class="col-md-4">
+                <div class="registro-card p-4 text-center card-hover" onclick="location.href='/gestionReservas'">
+                    <h5 class="titulo">Gestionar Reservas</h5>
+                    <p class="subtitulo">Agregar, eliminar y actualizar reservas</p>
+                </div>
+            </div>
+
         </div>
 
     </div>
 
-</div>
 
-<script>
-// 🔓 Decodificar JWT
-function parseJwt(token) {
-    return JSON.parse(atob(token.split('.')[1]));
-}
+    <script src="/js/auth.js"></script>
 
-const token = localStorage.getItem("token");
-
-// 🔐 Si no hay token → fuera
-if (!token) {
-    alert("No has iniciado sesión");
-    window.location.href = "/login";
-}
-
-// 🔥 VALIDAR ROL ADMIN
-try {
-    const payload = parseJwt(token);
-
-    console.log("JWT:", payload);
-
-    if (!payload.roles || !payload.roles.includes("ROLE_ADMIN")) {
-        alert("⛔ No tienes permisos de ADMIN");
-        window.location.href = "/inicio";
-    } else {
-        alert("✅ Bienvenido ADMIN");
-    }
-
-} catch (e) {
-    alert("❌ Token inválido");
-    window.location.href = "/login";
-}
-
-// 🚪 Logout
-function logout() {
-    localStorage.removeItem("token");
-    window.location.href = "/login";
-}
-</script>
+    <script>
+        requireAdmin();
+    </script>
 
 </body>
+
 </html>

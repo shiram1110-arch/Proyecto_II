@@ -8,6 +8,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 
 import proyectouno.api.entity.Clase;
+import proyectouno.api.entity.Usuario;
 import proyectouno.api.service.ClaseService;
 import proyectouno.api.service.ReservaService;
 import proyectouno.api.service.UsuarioService;
@@ -90,6 +91,7 @@ public class ViewController {
         return "gestionReservas";
     }
 
+    
     @GetMapping("/clases/editar/{id}")
     public String editarClase(@PathVariable int id, Model model) {
 
@@ -98,7 +100,17 @@ public class ViewController {
 
         model.addAttribute("clase", clase);
 
-        return "crearClase"; 
+        return "crearClase";
     }
 
+    @GetMapping("/usuarios/editar/{id}")
+    public String editarUsuario(@PathVariable int id, Model model) {
+
+        Usuario usuario = usuarioService.getById(id)
+                .orElseThrow(() -> new RuntimeException("Usuario no encontrado"));
+
+        model.addAttribute("usuario", usuario);
+
+        return "formularioVikingNuevo";
+    }
 }

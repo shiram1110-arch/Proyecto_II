@@ -21,7 +21,7 @@
             <button class="btn btn-main" onclick="window.location.href='/crearClase'">
                 + Crear Clase
             </button>
-            <button class="btn btn-danger" onclick="window.location.href='/inicio'">
+            <button class="btn btn-danger" onclick="logout()">
                 Cerrar sesión
             </button>
         </div>
@@ -33,7 +33,6 @@
             <h2 class="titulo">Lista de Clases</h2>
             <p class="subtitulo">Administra las clases del sistema</p>
         </div>
-
 
         <div class="mb-4">
             <input type="text" id="buscador" class="form-control" placeholder="Buscar clase...">
@@ -81,22 +80,31 @@
         </div>
 
     </div>
+
+    
+    <script src="/js/auth.js"></script>
+
     <script>
+        
+        requireAdmin();
+
+    
         function eliminarClase(id) {
+
             if (!confirm("¿Seguro que deseas eliminar esta clase?")) return;
 
-            fetch(`/clases/${id}`, {
+            authFetch(`/clases/${id}`, {
                 method: "DELETE"
             })
-                .then(res => {
-                    if (!res.ok) throw new Error("Error al eliminar");
-                    
-                    window.location.reload();
-                })
-                .catch(err => alert(err.message));
+            .then(res => {
+                if (!res.ok) throw new Error("Error al eliminar");
+                alert("✅ Clase eliminada");
+                window.location.reload();
+            })
+            .catch(err => alert(err.message));
         }
-        
     </script>
+
 </body>
 
 </html>

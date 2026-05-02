@@ -22,31 +22,51 @@ public class SecurityConfig {
 
         @Bean
         public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
+
                 return http
-                                // 🔥 IMPORTANTE: desactiva CSRF para usar fetch desde HTML
+
                                 .csrf(csrf -> csrf.disable())
 
                                 .authorizeHttpRequests(auth -> auth
 
-                                                // 🔓 LOGIN API (JWT)
+                                                // 🔓 LOGIN
                                                 .requestMatchers("/registroCompleto/login").permitAll()
 
-                                                // 🔓 REGISTRO (🔥 CLAVE PARA TU ERROR 403)
+                                                // 🔓 REGISTRO USUARIO
                                                 .requestMatchers(HttpMethod.POST, "/usuarios").permitAll()
 
-                                                // 🔓 VISTAS Y RECURSOS
-                                                .requestMatchers("/", "/inicio", "/login",
-                                                                "/registro", "/formularioVikingNuevo",
+                                                // 🔒 API USUARIOS (SOLO ADMIN)
+                                                .requestMatchers(HttpMethod.GET, "/usuarios").hasRole("ADMIN")
+                                                .requestMatchers(HttpMethod.PUT, "/usuarios/**").hasRole("ADMIN")
+                                                .requestMatchers(HttpMethod.DELETE, "/usuarios/**").hasRole("ADMIN")
+
+                                                // 🔥 IMPORTANTE: PERMITIR VISTA EDITAR
+                                                .requestMatchers("/usuarios/editar/**").permitAll()
+
+                                                // 🔓 CLASES públicas
+                                                .requestMatchers(HttpMethod.GET, "/clases/**").permitAll()
+
+                                                // 🔒 CLASES ADMIN
+                                                .requestMatchers(HttpMethod.POST, "/clases/**").hasRole("ADMIN")
+                                                .requestMatchers(HttpMethod.PUT, "/clases/**").hasRole("ADMIN")
+                                                .requestMatchers(HttpMethod.DELETE, "/clases/**").hasRole("ADMIN")
+
+                                                // 🔒 RESERVAS ADMIN
+                                                .requestMatchers(HttpMethod.DELETE, "/api/reservas/**").hasRole("ADMIN")
+
+                                                // 🔓 VISTAS (HTML)
+                                                .requestMatchers(
+                                                                "/", "/inicio", "/login", "/registro",
+                                                                "/formularioVikingNuevo",
                                                                 "/usuariosVista", "/clasesVista",
                                                                 "/adminDashboard", "/gestionReservas",
                                                                 "/horarioClases", "/reservas/**",
                                                                 "/crearClase", "/crearUsuario",
-                                                                "/clases/**", "/error",
+                                                                "/error",
                                                                 "/img/**", "/css/**", "/js/**",
                                                                 "/swagger-ui/**", "/v3/api-docs/**")
                                                 .permitAll()
 
-                                                // 🔒 TODO LO DEMÁS REQUIERE LOGIN
                                                 .anyRequest().authenticated())
 
                                 // 🔐 FILTRO JWT
@@ -55,11 +75,13 @@ public class SecurityConfig {
                                 .build();
         }
 
+        // 🔑 Authentication Manager
         @Bean
         public AuthenticationManager authenticationManager(AuthenticationConfiguration config) throws Exception {
                 return config.getAuthenticationManager();
         }
 
+        // 🔒 Password encoder
         @Bean
         public PasswordEncoder passwordEncoder() {
                 return new BCryptPasswordEncoder();

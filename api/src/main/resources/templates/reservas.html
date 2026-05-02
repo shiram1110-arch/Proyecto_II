@@ -30,12 +30,10 @@
 
                 <div class="col-md-7">
 
-                    <!-- ❌ sin clase -->
                     <div th:if="${clase == null}">
                         <p>No se encontró la clase</p>
                     </div>
 
-                    <!-- ✅ con clase -->
                     <div th:if="${clase != null}">
 
                         <h2 th:text="${clase.nombre}"></h2>
@@ -44,7 +42,6 @@
                         <p th:text="${clase.horario}"></p>
 
                         <p th:text="${clase.capacidad + ' cupos disponibles'}"></p>
-
 
                         <form id="formReserva">
 
@@ -73,18 +70,16 @@
         </div>
     </footer>
 
+    <!-- 🔐 AUTH -->
+    <script src="/js/auth.js"></script>
+
     <script>
-        document.getElementById("formReserva")?.addEventListener("submit", async function (e) {
+        // 🔒 proteger página
+        requireAuth();
+
+        document.getElementById("formReserva")?.addEventListener("submit", function (e) {
 
             e.preventDefault();
-
-            const token = localStorage.getItem("token");
-
-            if (!token) {
-                alert("Debes iniciar sesión");
-                window.location.href = "/login";
-                return;
-            }
 
             const claseId = document.querySelector("[name=claseId]").value;
 
@@ -95,28 +90,21 @@
                 estado: "Activa"
             };
 
-            try {
+            authFetch("/api/reservas", {
+                method: "POST",
+                body: JSON.stringify(data)
+            })
+            .then(res => {
+                if (!res) return; // por si hubo logout automático
 
-                const res = await fetch("/api/reservas", {
-                    method: "POST",
-                    headers: {
-                        "Content-Type": "application/json",
-                        "Authorization": "Bearer " + token
-                    },
-                    body: JSON.stringify(data)
-                });
-
-                if (!res.ok) {
-                    const error = await res.text();
-                    throw new Error(error);
-                }
+                if (!res.ok) return res.text().then(err => { throw new Error(err); });
 
                 alert("✅ Reserva realizada");
                 window.location.href = "/horarioClases";
-
-            } catch (err) {
+            })
+            .catch(err => {
                 alert("❌ " + err.message);
-            }
+            });
 
         });
     </script>

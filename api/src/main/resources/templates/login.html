@@ -18,7 +18,6 @@
                 <h3 class="fw-bold titulo">Bienvenido Viking</h3>
             </div>
 
-            <!-- 🔥 FORM SIN action -->
             <form id="loginForm">
 
                 <div class="form-floating mb-3">
@@ -45,10 +44,7 @@
                 <div class="text-center mb-4">
                     <br>
                     <img src="/img/logo.png" alt="logo" class="logo">
-                    <br>
-                    <a href="/horarioClases">Ver horario de clases</a>
-                    <br>
-                    <a href="/adminDashboard">Admin</a>
+                    
                 </div>
 
             </form>
@@ -57,7 +53,10 @@
 
     </div>
 
-    <!-- 🔥 SCRIPT JWT -->
+    <!-- 🔐 AUTH -->
+    <script src="/js/auth.js"></script>
+    
+
     <script>
         document.getElementById("loginForm").addEventListener("submit", function (e) {
             e.preventDefault();
@@ -80,8 +79,8 @@
                 return res.json();
             })
             .then(data => {
-                // 🔐 Guardar token
-                localStorage.setItem("token", data.token);
+                // 🔐 Guardar token usando auth.js
+                setToken(data.token);
 
                 // 🚀 Redirigir
                 window.location.href = "/inicio";

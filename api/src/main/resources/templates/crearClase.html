@@ -5,10 +5,7 @@
     <meta charset="UTF-8">
     <title>Crear Clase</title>
 
-    
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
-
-    
     <link rel="stylesheet" href="/css/crearClase.css">
 </head>
 
@@ -23,7 +20,6 @@
                 <h2 class="titulo">Nueva Clase</h2>
                 <p class="subtitulo">Crea una clase en el sistema</p>
             </div>
-
 
             <form id="formClase">
 
@@ -73,7 +69,12 @@
     </div>
 
 
+    <script src="/js/auth.js"></script>
+
     <script>
+
+        requireAdmin();
+
         document.getElementById("formClase").addEventListener("submit", function (e) {
             e.preventDefault();
 
@@ -90,17 +91,14 @@
             let url = "/clases";
             let method = "POST";
 
-            
             if (id) {
                 url = `/clases/${id}`;
                 method = "PUT";
             }
 
-            fetch(url, {
+
+            authFetch(url, {
                 method: method,
-                headers: {
-                    "Content-Type": "application/json"
-                },
                 body: JSON.stringify(data)
             })
                 .then(res => {
@@ -108,6 +106,7 @@
                     return res.json();
                 })
                 .then(() => {
+                    alert("✅ Clase guardada");
                     window.location.href = "/clasesVista";
                 })
                 .catch(err => alert(err.message));

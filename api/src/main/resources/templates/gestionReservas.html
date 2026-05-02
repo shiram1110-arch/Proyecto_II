@@ -18,7 +18,7 @@
         </div>
 
         <div class="d-flex gap-2">
-            <button class="btn btn-danger" onclick="window.location.href='/inicio'">
+            <button class="btn btn-danger" onclick="logout()">
                 Cerrar sesión
             </button>
         </div>
@@ -56,7 +56,8 @@
                         <td th:text="${reserva.estado}"></td>
 
                         <td>
-                            <button class="btn btn-sm btn-danger">
+                            <button class="btn btn-sm btn-danger"
+                                th:onclick="'eliminarReserva(' + ${reserva.idReserva} + ')'">
                                 Eliminar
                             </button>
                         </td>
@@ -68,6 +69,36 @@
         </div>
 
     </div>
+
+    <!-- 🔥 auth.js -->
+    <script src="/js/auth.js"></script>
+
+    <script>
+        // 🔒 SOLO ADMIN
+        requireAdmin();
+
+        // 🔥 eliminar reserva usando API
+        function eliminarReserva(id) {
+
+            if (!confirm("¿Seguro que deseas eliminar esta reserva?")) return;
+
+            authFetch(`/api/reservas/${id}`, {
+                method: "DELETE"
+            })
+            .then(res => {
+                if (!res) return;
+
+                if (!res.ok) throw new Error("Error al eliminar reserva");
+
+                alert("✅ Reserva eliminada");
+                location.reload();
+            })
+            .catch(err => {
+                console.error(err);
+                alert(err.message);
+            });
+        }
+    </script>
 
 </body>
 

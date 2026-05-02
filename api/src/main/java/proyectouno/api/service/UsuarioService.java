@@ -3,11 +3,13 @@ package proyectouno.api.service;
 import java.util.*;
 
 import org.springframework.http.HttpStatus;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
 
-import lombok.*;
+import lombok.AllArgsConstructor;
 import proyectouno.api.entity.Rol;
 import proyectouno.api.entity.Usuario;
 import proyectouno.api.repository.RolRepository;
@@ -21,14 +23,33 @@ public class UsuarioService {
     private RolRepository rolRepository;
     private PasswordEncoder passwordEncoder;
 
+    // 🔥 CREATE SEGURO
     public Usuario add(Usuario usuario) {
 
-        if (usuario.getRol() == null || usuario.getRol().getIdRol() == null) {
-            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "El rol es obligatorio");
+        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+
+        boolean esAdmin = false;
+
+        if (auth != null && auth.getAuthorities() != null) {
+            esAdmin = auth.getAuthorities().stream()
+                    .anyMatch(a -> a.getAuthority().equals("ROLE_ADMIN"));
         }
 
-        Rol rol = rolRepository.findById(usuario.getRol().getIdRol())
-                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Rol no existe"));
+        Rol rol;
+
+        // 🔥 SI ES ADMIN → puede elegir rol
+        if (esAdmin && usuario.getRol() != null && usuario.getRol().getIdRol() != null) {
+
+            rol = rolRepository.findById(usuario.getRol().getIdRol())
+                    .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Rol no existe"));
+
+        } 
+        // 🔥 SI NO → SIEMPRE USER
+        else {
+
+            rol = rolRepository.findById(1) // ROLE_USER
+                    .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Rol USER no existe"));
+        }
 
         usuario.setRol(rol);
 
@@ -49,26 +70,41 @@ public class UsuarioService {
         usuarioRepository.deleteById(id);
     }
 
+    // 🔥 UPDATE SEGURO
     public Usuario update(int id, Usuario usuario) {
-        Optional<Usuario> existingUsuario = usuarioRepository.findById(id);
-        if (existingUsuario.isPresent()) {
-            Usuario updateUsuario = existingUsuario.get();
-            updateUsuario.setNombre(usuario.getNombre());
-            updateUsuario.setApellidoUno(usuario.getApellidoUno());
-            updateUsuario.setApellidoDos(usuario.getApellidoDos());
-            updateUsuario.setEmail(usuario.getEmail());
-            updateUsuario.setTelefono(usuario.getTelefono());
-            updateUsuario.setPassword(usuario.getPassword());
-            updateUsuario.setRol(usuario.getRol());
-            return usuarioRepository.save(updateUsuario);
-        } else {
-            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Usuario no encontrado");
+
+        Usuario existingUsuario = usuarioRepository.findById(id)
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Usuario no encontrado"));
+
+        existingUsuario.setNombre(usuario.getNombre());
+        existingUsuario.setApellidoUno(usuario.getApellidoUno());
+        existingUsuario.setApellidoDos(usuario.getApellidoDos());
+        existingUsuario.setEmail(usuario.getEmail());
+        existingUsuario.setTelefono(usuario.getTelefono());
+
+        // 🔥 SOLO actualizar password si viene
+        if (usuario.getPassword() != null && !usuario.getPassword().isEmpty()) {
+            existingUsuario.setPassword(passwordEncoder.encode(usuario.getPassword()));
         }
+
+        // 🔥 SOLO ADMIN puede cambiar rol
+        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+
+        boolean esAdmin = auth.getAuthorities().stream()
+                .anyMatch(a -> a.getAuthority().equals("ROLE_ADMIN"));
+
+        if (esAdmin && usuario.getRol() != null) {
+            Rol rol = rolRepository.findById(usuario.getRol().getIdRol())
+                    .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Rol no existe"));
+
+            existingUsuario.setRol(rol);
+        }
+
+        return usuarioRepository.save(existingUsuario);
     }
 
     public Usuario findByUsername(String username) {
         return usuarioRepository.findByUserName(username)
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Usuario no encontrado"));
     }
-
 }

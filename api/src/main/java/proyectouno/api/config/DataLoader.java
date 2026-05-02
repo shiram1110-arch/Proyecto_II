@@ -14,31 +14,68 @@ import proyectouno.api.repository.RolRepository;
 public class DataLoader {
 
     @Bean
-    CommandLineRunner initUsers(UsuarioRepository userRepository,RolRepository rolRepository,
-        PasswordEncoder passwordEncoder) {
+    CommandLineRunner initUsers(UsuarioRepository userRepository,
+            RolRepository rolRepository,
+            PasswordEncoder passwordEncoder) {
 
         return args -> {
-            Rol rol = rolRepository.findById(2)
-                    .orElseThrow(() -> new RuntimeException("Rol no encontrado"));
 
-            if (userRepository.findByUserName("Runor").isEmpty()) {
+            // =========================
+            // CREAR ROLES SI NO EXISTEN
+            // =========================
 
-                Usuario u = new Usuario();
+            Rol userRole = rolRepository.findByNombre("ROLE_USER")
+                    .orElseGet(() -> {
+                        Rol r = new Rol();
+                        r.setNombre("ROLE_USER");
+                        return rolRepository.save(r);
+                    });
 
-                u.setNombre("Alex");
-                u.setApellidoUno("Morales");
-                u.setApellidoDos("Picado");
-                u.setEmail("adpm@gmail.com");
-                u.setTelefono("84999890");
-                u.setUserName("Runor");
+            Rol adminRole = rolRepository.findByNombre("ROLE_ADMIN")
+                    .orElseGet(() -> {
+                        Rol r = new Rol();
+                        r.setNombre("ROLE_ADMIN");
+                        return rolRepository.save(r);
+                    });
 
-                u.setPassword(passwordEncoder.encode("1234"));
+            // =========================
+            // CREAR USUARIO NORMAL
+            // =========================
 
-                u.setRol(rol);
+            if (userRepository.findByUserName("usuario").isEmpty()) {
 
-                userRepository.save(u);
+                Usuario user = new Usuario();
 
+                user.setNombre("Juan");
+                user.setApellidoUno("Perez");
+                user.setApellidoDos("Lopez");
+                user.setEmail("usuario@gmail.com");
+                user.setTelefono("88888888");
+                user.setUserName("usuario");
+                user.setPassword(passwordEncoder.encode("1234"));
+                user.setRol(userRole);
 
+                userRepository.save(user);
+            }
+
+            // =========================
+            // CREAR ADMIN
+            // =========================
+
+            if (userRepository.findByUserName("admin").isEmpty()) {
+
+                Usuario admin = new Usuario();
+
+                admin.setNombre("Admin");
+                admin.setApellidoUno("Principal");
+                admin.setApellidoDos("Sistema");
+                admin.setEmail("admin@gmail.com");
+                admin.setTelefono("99999999");
+                admin.setUserName("admin");
+                admin.setPassword(passwordEncoder.encode("1234"));
+                admin.setRol(adminRole);
+
+                userRepository.save(admin);
             }
         };
     }
