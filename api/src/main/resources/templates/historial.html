@@ -47,7 +47,45 @@
     <script src="/js/auth.js"></script>
     <script>requireAuth()
     </script>
-    
+
 </body>
+
+<script>
+    async function cargarHistorial() {
+        try {
+            const token = localStorage.getItem("token");
+
+            const response = await fetch("/api/reservas/mis-clases", {
+                method: "GET",
+                headers: {
+                    "Authorization": "Bearer " + token
+                }
+            });
+
+            const data = await response.json();
+
+            const tabla = document.getElementById("tablaHistorial");
+            tabla.innerHTML = "";
+
+            data.forEach(reserva => {
+                const fila = `
+                <tr>
+                    <td>${reserva.id}</td>
+                    <td>${reserva.clase.nombre}</td>
+                    <td>${reserva.clase.instructor}</td>
+                    <td>${reserva.fechaReserva}</td>
+                    <td>${reserva.estado}</td>
+                </tr>
+            `;
+                tabla.innerHTML += fila;
+            });
+
+        } catch (error) {
+            console.error("Error:", error);
+        }
+    }
+
+    cargarHistorial();
+</script>
 
 </html>

@@ -1,5 +1,6 @@
 package proyectouno.api.controller;
 
+
 import java.util.Optional;
 
 import org.springframework.stereotype.Controller;
@@ -69,18 +70,18 @@ public class ViewController {
     }
 
     @GetMapping("/historial")
-    public String historial(){
+    public String historial() {
         return "historial";
     }
 
-     @GetMapping("/login")
+    @GetMapping("/login")
     public String login() {
-        return "login"; 
+        return "login";
     }
 
     @GetMapping("/registro")
     public String registro() {
-        return "formularioVikingNuevo"; 
+        return "formularioVikingNuevo";
     }
 
     @GetMapping("/adminDashboard")
@@ -106,7 +107,6 @@ public class ViewController {
         return "gestionReservas";
     }
 
-    
     @GetMapping("/clases/editar/{id}")
     public String editarClase(@PathVariable int id, Model model) {
 
@@ -128,4 +128,6 @@ public class ViewController {
 
         return "formularioVikingNuevo";
     }
+
+    
 }

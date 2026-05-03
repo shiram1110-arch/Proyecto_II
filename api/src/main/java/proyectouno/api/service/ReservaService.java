@@ -64,4 +64,9 @@ public class ReservaService {
 
         return reservaRepository.save(existing);
     }
+
+    public List<Reserva> getReservasPorUsuario(int id) {
+        return reservaRepository.findByUsuarioIdUsuario(id);
+    }
+
 }
