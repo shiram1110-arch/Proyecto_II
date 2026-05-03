@@ -2,21 +2,28 @@ package proyectouno.api.entity;
 
 import java.time.LocalDate;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+
 import jakarta.persistence.*;
 import lombok.*;
 
 @Entity
 @Table(name = "reservas")
-@Data
+@Getter
+@Setter
+@ToString(exclude = {"usuario", "clase"})
+@EqualsAndHashCode(exclude = {"usuario", "clase"})
 
 public class Reserva {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer idReserva;
     @ManyToOne
+    @JsonIgnoreProperties("reservas")
     @JoinColumn(name = "idUsuario", nullable = false)
     private Usuario usuario;
     @ManyToOne
+    @JsonIgnoreProperties("reservas")
     @JoinColumn(name = "idClase", nullable = false)
     private Clase clase;
     @Column(name = "fechaReserva", nullable = false)

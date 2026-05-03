@@ -45,7 +45,7 @@ public class SecurityConfig {
 
                                                 // 🔓 CLASES públicas
                                                 .requestMatchers(HttpMethod.GET, "/clases/**").permitAll()
-                                                .requestMatchers(HttpMethod.GET, "/api/reservas/mis-clases/**").authenticated()
+                                                .requestMatchers("/api/reservas/mis-clases").permitAll()
 
                                                 // 🔒 CLASES ADMIN
                                                 .requestMatchers(HttpMethod.POST, "/clases/**").hasRole("ADMIN")
@@ -59,7 +59,7 @@ public class SecurityConfig {
                                                 .requestMatchers(
                                                                 "/", "/inicio", "/login", "/registro",
                                                                 "/formularioVikingNuevo",
-                                                                "/usuariosVista", "/clasesVista","/historial",
+                                                                "/usuariosVista", "/clasesVista", "/historial",
                                                                 "/adminDashboard", "/gestionReservas",
                                                                 "/horarioClases", "/reservas/**",
                                                                 "/crearClase", "/crearUsuario",

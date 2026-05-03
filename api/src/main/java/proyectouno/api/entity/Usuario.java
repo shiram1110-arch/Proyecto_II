@@ -2,12 +2,17 @@ package proyectouno.api.entity;
 
 import java.util.List;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 import jakarta.persistence.*;
 import lombok.*;
 
 @Entity
 @Table(name = "usuarios")
-@Data
+@Getter
+@Setter
+@ToString(exclude = {"reservas"})
+@EqualsAndHashCode(exclude = {"reservas"})
 @AllArgsConstructor
 @NoArgsConstructor
 
@@ -33,6 +38,7 @@ public class Usuario {
     @JoinColumn(name = "idRol", nullable = false) 
     private Rol rol; 
     @OneToMany(mappedBy = "usuario")
+    @JsonIgnore
     private List<Reserva> reservas;
 
     

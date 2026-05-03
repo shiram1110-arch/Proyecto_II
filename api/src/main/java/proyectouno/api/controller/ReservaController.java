@@ -64,6 +64,7 @@ public class ReservaController {
         Clase clase = claseService.getById(reserva.getClase().getIdClase())
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Clase no encontrada"));
 
+        
         reserva.setClase(clase);
 
         return reservaService.add(reserva);

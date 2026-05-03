@@ -28,15 +28,15 @@
             <table class="table table-striped table-dark text-center">
                 <thead>
                     <tr>
-                        <th>ID</th>
                         <th>Clase</th>
-                        <th>Instructor</th>
+                        <th>Capacidad de personas</th>
                         <th>Fecha</th>
                         <th>Hora</th>
                         <th>Estado</th>
                     </tr>
                 </thead>
                 <tbody id="tablaHistorial">
+
                 </tbody>
             </table>
 
@@ -55,29 +55,39 @@
         try {
             const token = localStorage.getItem("token");
 
-            const response = await fetch("/api/reservas/mis-clases", {
-                method: "GET",
-                headers: {
-                    "Authorization": "Bearer " + token
-                }
+
+            const response = await authFetch("/api/reservas/mis-clases", {
+                method: "GET"
             });
+
+            console.log("STATUS:", response.status);
+
+            if (!response.ok) {
+                console.error("Error HTTP:", response.status);
+
+                return;
+            }
 
             const data = await response.json();
 
+            console.log("DATA:", data);
+            console.log("Cantidad:", data.length);
+
             const tabla = document.getElementById("tablaHistorial");
             tabla.innerHTML = "";
+            let contenido = "";
 
             data.forEach(reserva => {
-                const fila = `
-                <tr>
-                    <td>${reserva.id}</td>
-                    <td>${reserva.clase.nombre}</td>
-                    <td>${reserva.clase.instructor}</td>
-                    <td>${reserva.fechaReserva}</td>
-                    <td>${reserva.estado}</td>
-                </tr>
-            `;
-                tabla.innerHTML += fila;
+                contenido += `
+            <tr>
+                <td>${reserva.clase?.nombre || ''}</td>
+                <td>${reserva.clase?.capacidad || ''}</td>
+                <td>${reserva.fechaReserva}</td>
+                <td>${reserva.clase?.horario || ''}</td>
+                <td>${reserva.estado}</td>
+            </tr>
+        `;
+                tabla.innerHTML = contenido;
             });
 
         } catch (error) {
@@ -85,7 +95,7 @@
         }
     }
 
-    cargarHistorial();
+    document.addEventListener("DOMContentLoaded", cargarHistorial);
 </script>
 
 </html>

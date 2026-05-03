@@ -3,12 +3,17 @@ package proyectouno.api.entity;
 import java.time.LocalTime;
 import java.util.List;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 import jakarta.persistence.*;
 import lombok.*;
 
 @Entity
 @Table(name="clases")
-@Data
+@Getter
+@Setter
+@ToString(exclude = {"reservas"})
+@EqualsAndHashCode(exclude = {"reservas"})
 
 public class Clase {
     @Id
@@ -25,5 +30,6 @@ public class Clase {
     @Column(name = "capacidad", nullable = false)
     private Integer capacidad;
     @OneToMany(mappedBy="clase")
+    @JsonIgnore
     public List<Reserva> reservas;
 }

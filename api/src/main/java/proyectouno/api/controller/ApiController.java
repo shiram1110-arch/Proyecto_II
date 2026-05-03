@@ -2,10 +2,12 @@ package proyectouno.api.controller;
 
 import java.util.List;
 
+import org.springframework.http.HttpStatus;
 import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.server.ResponseStatusException;
 
 import proyectouno.api.entity.Reserva;
 import proyectouno.api.entity.Usuario;
@@ -26,13 +28,16 @@ public class ApiController {
 
     @GetMapping("/mis-clases")
     public List<Reserva> getReservas(Authentication authentication) {
+
         if (authentication == null) {
-            throw new RuntimeException("No autenticado (JWT no está funcionando)");
+            throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "No autenticado");
         }
+
         String user = authentication.getName();
 
         Usuario usuario = usuarioService.findByUsername(user);
-
+    
         return reservaService.getReservasPorUsuario(usuario.getIdUsuario());
+
     }
 }
