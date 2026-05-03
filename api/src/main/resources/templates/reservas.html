@@ -94,17 +94,20 @@
                 method: "POST",
                 body: JSON.stringify(data)
             })
-            .then(res => {
-                if (!res) return; // por si hubo logout automático
+                .then(res => {
+                    if (!res) return; // por si hubo logout automático
 
-                if (!res.ok) return res.text().then(err => { throw new Error(err); });
-
-                alert("✅ Reserva realizada");
-                window.location.href = "/horarioClases";
-            })
-            .catch(err => {
-                alert("❌ " + err.message);
-            });
+                    if (!res.ok) {
+                        return res.json().then(error => {
+                            throw new Error(error.message);
+                        });
+                    }
+                    alert("✅ Reserva realizada");
+                    window.location.href = "/horarioClases";
+                })
+                .catch(err => {
+                    alert("❌ " + err.message);
+                });
 
         });
     </script>

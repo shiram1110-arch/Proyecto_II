@@ -19,8 +19,10 @@ public class Clase {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer idClase;
+
     @Column(name = "nombre", nullable = false)
     private String nombre;
+
     @Column(name = "descripcion", nullable = false)
     private String descripcion;
     @Column(name = "diaSemana", nullable = false)
@@ -29,6 +31,7 @@ public class Clase {
     private LocalTime horario;
     @Column(name = "capacidad", nullable = false)
     private Integer capacidad;
+    
     @OneToMany(mappedBy="clase")
     @JsonIgnore
     public List<Reserva> reservas;

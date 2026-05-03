@@ -18,14 +18,17 @@ public class Reserva {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer idReserva;
+
     @ManyToOne
     @JsonIgnoreProperties("reservas")
     @JoinColumn(name = "idUsuario", nullable = false)
     private Usuario usuario;
+
     @ManyToOne
     @JsonIgnoreProperties("reservas")
     @JoinColumn(name = "idClase", nullable = false)
     private Clase clase;
+    
     @Column(name = "fechaReserva", nullable = false)
     private LocalDate fechaReserva;
     @Column(name = "estado", nullable = false)

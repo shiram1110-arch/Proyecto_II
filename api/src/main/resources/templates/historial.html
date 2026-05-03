@@ -13,7 +13,7 @@
 
     <nav class="navbar navbar-expand-lg navbar-dark">
         <div class="container-fluid">
-            <a class="navbar-brand" href="#"><span>Nombre de la persona</span></a>
+            <a class="navbar-brand" href="#"><span id="nombreUsuario"></span></a>
             <div class="d-flex">
                 <button onclick="logout()" class="btn btn-login-neon">Cerrar sesión</button>
             </div>
@@ -45,8 +45,7 @@
     </div>
 
     <script src="/js/auth.js"></script>
-    <script>requireAuth()
-    </script>
+    <script>requireAuth() </script>
 
 </body>
 
@@ -80,15 +79,15 @@
             data.forEach(reserva => {
                 contenido += `
             <tr>
-                <td>${reserva.clase?.nombre || ''}</td>
-                <td>${reserva.clase?.capacidad || ''}</td>
-                <td>${reserva.fechaReserva}</td>
-                <td>${reserva.clase?.horario || ''}</td>
-                <td>${reserva.estado}</td>
-            </tr>
+            <td>${reserva.nombreClase}</td>
+            <td>${reserva.capacidad}</td>
+            <td>${reserva.fechaReserva}</td>
+            <td>${reserva.horario}</td>
+            <td>${reserva.estado}</td>
+        </tr>
         `;
-                tabla.innerHTML = contenido;
             });
+            tabla.innerHTML = contenido;
 
         } catch (error) {
             console.error("Error:", error);
@@ -97,5 +96,7 @@
 
     document.addEventListener("DOMContentLoaded", cargarHistorial);
 </script>
+
+<script>getNombre()</script>
 
 </html>

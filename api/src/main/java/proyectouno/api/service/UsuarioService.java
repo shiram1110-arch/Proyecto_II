@@ -26,6 +26,11 @@ public class UsuarioService {
     // 🔥 CREATE SEGURO
     public Usuario add(Usuario usuario) {
 
+        if (usuarioRepository.findByUserName(usuario.getUserName()).isPresent()) {
+        throw new ResponseStatusException(
+                HttpStatus.BAD_REQUEST
+        );
+    }
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
 
         boolean esAdmin = false;

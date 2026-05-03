@@ -8,6 +8,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
 
 import lombok.AllArgsConstructor;
+import proyectouno.api.dto.ReservaDTO;
 import proyectouno.api.entity.*;
 import proyectouno.api.repository.ReservaRepository;
 
@@ -23,6 +24,23 @@ public class ReservaService {
         // ⚠️ validar clase
         if (reserva.getClase() == null) {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Clase requerida");
+        }
+
+        if (reserva.getUsuario() == null) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Usuario requerido");
+        }
+
+        // 🔴 VALIDAR QUE NO EXISTA YA LA RESERVA (NUEVO)
+        boolean existe = !reservaRepository
+                .findByUsuario_IdUsuarioAndClase_IdClase(
+                        reserva.getUsuario().getIdUsuario(),
+                        reserva.getClase().getIdClase())
+                .isEmpty();
+
+        if (existe) {
+            throw new ResponseStatusException(
+                    HttpStatus.BAD_REQUEST,
+                    "Ya tienes una reserva para esta clase");
         }
 
         // 🔥 completar datos SI vienen nulos
@@ -65,8 +83,19 @@ public class ReservaService {
         return reservaRepository.save(existing);
     }
 
-    public List<Reserva> getReservasPorUsuario(int id) {
-        return reservaRepository.findByUsuarioIdUsuario(id);
+    public List<ReservaDTO> getReservasPorUsuario(int id) {
+
+        List<Reserva> reservas = reservaRepository.findByUsuario_IdUsuario(id);
+
+        return reservas.stream().map(r -> {
+            ReservaDTO dto = new ReservaDTO();
+            dto.setNombreClase(r.getClase().getNombre());
+            dto.setCapacidad(r.getClase().getCapacidad());
+            dto.setFechaReserva(r.getFechaReserva());
+            dto.setHorario(r.getClase().getHorario());
+            dto.setEstado(r.getEstado());
+            return dto;
+        }).toList();
     }
 
 }

@@ -101,3 +101,16 @@ function authFetch(url, options = {}) {
         return res;
     });
 }
+function getNombre() {
+    document.addEventListener("DOMContentLoaded", async () => {
+
+        const response = await authFetch("/api/usuarios/me");
+
+        if (response.ok) {
+            const usuario = await response.json();
+
+            document.getElementById("nombreUsuario").textContent =
+                usuario.nombre + " " + usuario.apellidoUno;
+        }
+    });
+}

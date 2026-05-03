@@ -30,13 +30,13 @@ public class Usuario {
     private String email;
     @Column(name = "telefono", nullable = false)
     private String telefono;
-    @Column(name = "userName", nullable = false)
+    @Column(name = "userName",  nullable = false, unique = true)
     private String userName;
     @Column(name = "password", nullable = false)
     private String password;
-    @ManyToOne 
+    @ManyToOne
     @JoinColumn(name = "idRol", nullable = false) 
-    private Rol rol; 
+    private Rol rol;
     @OneToMany(mappedBy = "usuario")
     @JsonIgnore
     private List<Reserva> reservas;

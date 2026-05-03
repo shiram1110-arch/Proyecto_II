@@ -11,6 +11,20 @@ body {
     z-index: 1000;
 }
 
+.navbar {
+    background: linear-gradient(90deg, #0f0f0f, #1a1a1a, #0f0f0f);
+    border-bottom: 1px solid rgba(255, 0, 0, 0.3);
+    box-shadow: 0 0 8px rgba(255, 0, 0, 0.4);
+}
+.navbar-brand span {
+    color: white;
+    font-weight: bold;
+    text-shadow: 0 0 8px red;
+}
+#nombreUsuario {
+    font-size: 30px;
+}
+
 .btn-login-neon {
     background: transparent;
     color: #ff0000;
