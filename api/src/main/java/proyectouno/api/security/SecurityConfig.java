@@ -58,7 +58,7 @@ public class SecurityConfig {
                                                 .requestMatchers(
                                                                 "/", "/inicio", "/login", "/registro",
                                                                 "/formularioVikingNuevo",
-                                                                "/usuariosVista", "/clasesVista",
+                                                                "/usuariosVista", "/clasesVista","/historial",
                                                                 "/adminDashboard", "/gestionReservas",
                                                                 "/horarioClases", "/reservas/**",
                                                                 "/crearClase", "/crearUsuario",

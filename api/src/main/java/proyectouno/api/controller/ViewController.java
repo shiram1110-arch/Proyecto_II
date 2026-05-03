@@ -68,6 +68,21 @@ public class ViewController {
         return "crearClase";
     }
 
+    @GetMapping("/historial")
+    public String historial(){
+        return "historial";
+    }
+
+     @GetMapping("/login")
+    public String login() {
+        return "login"; 
+    }
+
+    @GetMapping("/registro")
+    public String registro() {
+        return "formularioVikingNuevo"; 
+    }
+
     @GetMapping("/adminDashboard")
     public String adminPanel() {
         return "adminDashboard";
