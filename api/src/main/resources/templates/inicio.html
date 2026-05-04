@@ -59,64 +59,54 @@
 
     </div>
 
-    <!-- 🔥 SECCIÓN -->
     <section class="container mt-5">
         <h2 class="text-center mb-4 titulo">Nuestras Clases</h2>
 
+        <!-- 🔥 SECCIÓN -->
         <div class="row text-center">
 
             <div class="col-md-4 mb-3">
                 <div class="card card-custom">
-                    <div class="card-body">
-                        <h5>Smart Rumba</h5>
-                        <p>Baila y quema calorías</p>
-                    </div>
+                    <img src="/img/spinning.png" class="img-fluid">
                 </div>
             </div>
 
             <div class="col-md-4 mb-3">
                 <div class="card card-custom">
-                    <div class="card-body">
-                        <h5>Smart Cycling</h5>
-                        <p>Entrenamiento intenso</p>
-                    </div>
+                    <img src="/img/zumba.png" class="img-fluid">
                 </div>
             </div>
 
             <div class="col-md-4 mb-3">
                 <div class="card card-custom">
-                    <div class="card-body">
-                        <h5>Smart Zumba</h5>
-                        <p>Diversión y energía</p>
-                    </div>
+                    <img src="/img/funcional.png" class="img-fluid">
                 </div>
             </div>
 
         </div>
-    </section>
 
-    <!-- 🔥 FOOTER -->
-    <footer class="footer mt-5 py-4 text-center">
-        <div class="container">
-            <img src="/img/logo.png" width="120" class="mb-2">
-            <p class="mb-1">© 2026 VIKINGS</p>
-            <p class="mb-0 small">Todos los derechos reservados</p>
-        </div>
-    </footer>
+        <!-- 🔥 FOOTER -->
+        <footer class="footer mt-5 py-4 text-center">
+            <div class="container">
+                <img src="/img/logo.png" width="120" class="mb-2">
+                <p class="mb-1">© 2026 VIKINGS</p>
+                <p class="mb-0 small">Todos los derechos reservados</p>
+            </div>
+        </footer>
 
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+        <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
 
-    <!-- 🔐 AUTH -->
-    <script src="/js/auth.js"></script>
+        <!-- 🔐 AUTH -->
+        <script src="/js/auth.js"></script>
 
-    <script>
-        const container = document.getElementById("authButtons");
+        <script>
+            const container = document.getElementById("authButtons");
 
-        if (isAuthenticated()) {
+            if (isAuthenticated()) {
 
-            // 👑 ADMIN
-            if (isAdmin()) {
-                container.innerHTML = `
+                // 👑 ADMIN
+                if (isAdmin()) {
+                    container.innerHTML = `
                 <ul class="nav nav-tabs custom-nav">
                     <li class="nav-item">
                         <a class="nav-link active" href="/horarioClases">Clases</a>
@@ -129,11 +119,11 @@
                     </li>
                 </ul>
                 `;
-            }
+                }
 
-            // 👤 USER
-            else if (isUser()) {
-                container.innerHTML = `
+                // 👤 USER
+                else if (isUser()) {
+                    container.innerHTML = `
                 <ul class="nav nav-tabs custom-nav">
                     <li class="nav-item">
                         <a class="nav-link" href="/historial">Historial</a>
@@ -146,11 +136,11 @@
                     </li>
                 </ul>
                 `;
+                }
             }
-        }
-    </script>
+        </script>
 
-    <script>getNombre()</script>
+        <script>getNombre()</script>
 
 </body>
 

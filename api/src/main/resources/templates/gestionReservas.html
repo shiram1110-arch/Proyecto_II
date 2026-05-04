@@ -1,26 +1,22 @@
 <!DOCTYPE html>
-
 <html xmlns:th="http://www.thymeleaf.org" lang="es">
 
 <head>
     <meta charset="UTF-8">
     <title>Gestión de Reservas</title>
 
-<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
-<link rel="stylesheet" href="/css/usuarios.css">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="/css/usuarios.css">
 
-<style>
-    .filtro-activo {
-        background-color: white !important;
-        color: black !important;
-    }
-</style>
-
-
+    <style>
+        .filtro-activo {
+            background-color: white !important;
+            color: black !important;
+        }
+    </style>
 </head>
 
 <body>
-
 
 <nav class="navbar header px-4">
     <div class="d-flex align-items-center">
@@ -40,7 +36,7 @@
         <p class="subtitulo">Visualiza y elimina reservas del sistema</p>
     </div>
 
-    
+    <!-- 🔥 FILTROS -->
     <div class="mb-4 d-flex gap-2 justify-content-center flex-wrap">
         <button class="btn btn-outline-light filtro-btn" onclick="filtrar('', this)">Todas</button>
         <button class="btn btn-outline-success filtro-btn" onclick="filtrar('ACTIVA', this)">Activas</button>
@@ -61,13 +57,13 @@
                 </tr>
             </thead>
 
+            <!-- 🔥 CARGA INICIAL (Thymeleaf) -->
             <tbody id="tbodyReservas">
                 <tr th:each="reserva : ${reservas}">
                     <td th:text="${reserva.usuario.nombre}"></td>
                     <td th:text="${reserva.clase.nombre}"></td>
                     <td th:text="${#temporals.format(reserva.fechaReserva, 'yyyy-MM-dd')}"></td>
                     <td th:text="${reserva.estado}"></td>
-
                     <td>
                         <button class="btn btn-sm btn-danger"
                             th:onclick="'eliminarReserva(' + ${reserva.idReserva} + ')'">
@@ -86,89 +82,82 @@
 <script src="/js/auth.js"></script>
 
 <script>
-    requireAdmin();
+requireAdmin();
 
-    function eliminarReserva(id) {
+// 🗑️ ELIMINAR
+function eliminarReserva(id) {
 
-        if (!confirm("¿Seguro que deseas eliminar esta reserva?")) return;
+    if (!confirm("¿Seguro que deseas eliminar esta reserva?")) return;
 
-        authFetch(`/api/reservas/${id}`, {
-            method: "DELETE"
-        })
-            .then(res => {
-                if (!res.ok) throw new Error("Error al eliminar reserva");
+    authFetch(`/api/reservas/${id}`, {
+        method: "DELETE"
+    })
+    .then(res => {
+        if (!res.ok) throw new Error("Error al eliminar reserva");
 
-                alert("✅ Reserva eliminada");
-                location.reload();
-            })
-            .catch(err => {
-                console.error(err);
-                alert(err.message);
-            });
+        alert("✅ Reserva eliminada");
+        location.reload();
+    })
+    .catch(err => {
+        console.error(err);
+        alert(err.message);
+    });
+}
+
+// 🔍 FILTRAR
+function filtrar(estado, btn) {
+
+    document.querySelectorAll(".filtro-btn")
+        .forEach(b => b.classList.remove("filtro-activo"));
+
+    if (btn) btn.classList.add("filtro-activo");
+
+    if (estado === "") {
+        location.reload();
+        return;
     }
 
-    
-    function filtrar(estado, btn) {
+    authFetch(`/api/reservas/estado/${estado}`)
+        .then(res => res.json())
+        .then(data => {
 
-        // reset estilos
-        document.querySelectorAll(".filtro-btn").forEach(b => b.classList.remove("filtro-activo"));
+            let tbody = document.getElementById("tbodyReservas");
+            tbody.innerHTML = "";
 
-        // marcar activo
-        if (btn) btn.classList.add("filtro-activo");
-
-        if (estado === "") {
-            location.reload();
-            return;
-        }
-
-        authFetch(`/api/reservas/estado/${estado}`)
-            .then(res => {
-                if (!res.ok) throw new Error("Error de permisos");
-                return res.json();
-            })
-            .then(data => {
-
-                let tbody = document.getElementById("tbodyReservas");
-                tbody.innerHTML = "";
-
-                if (data.length === 0) {
-                    tbody.innerHTML = `
-                        <tr>
-                            <td colspan="5">No hay reservas en este estado</td>
-                        </tr>
-                    `;
-                    return;
-                }
-
-                data.forEach(reserva => {
-
-                    let fecha = reserva.fechaReserva || "";
-
-                    tbody.innerHTML += `
+            if (data.length === 0) {
+                tbody.innerHTML = `
                     <tr>
-                        <td>${reserva.usuario.nombre}</td>
-                        <td>${reserva.clase.nombre}</td>
-                        <td>${fecha}</td>
-                        <td>${reserva.estado}</td>
-                        <td>
-                            <button class="btn btn-sm btn-danger"
-                                onclick="eliminarReserva(${reserva.idReserva})">
-                                Eliminar
-                            </button>
-                        </td>
+                        <td colspan="5">No hay reservas</td>
                     </tr>
-                    `;
-                });
+                `;
+                return;
+            }
 
-            })
-            .catch(err => {
-                console.error(err);
-                alert("Error al filtrar");
+            data.forEach(r => {
+
+                tbody.innerHTML += `
+                <tr>
+                    <td>${r.nombreUsuario}</td>
+                    <td>${r.nombreClase}</td>
+                    <td>${r.fechaReserva}</td>
+                    <td>${r.estado}</td>
+                    <td>
+                        <button class="btn btn-sm btn-danger"
+                            onclick="eliminarReserva(${r.idReserva})">
+                            Eliminar
+                        </button>
+                    </td>
+                </tr>
+                `;
             });
-    }
 
+        })
+        .catch(err => {
+            console.error(err);
+            alert("Error al filtrar");
+        });
+}
 </script>
 
 </body>
-
 </html>

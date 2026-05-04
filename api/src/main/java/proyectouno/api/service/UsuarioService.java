@@ -23,44 +23,21 @@ public class UsuarioService {
     private RolRepository rolRepository;
     private PasswordEncoder passwordEncoder;
 
-    // 🔥 CREATE SEGURO
     public Usuario add(Usuario usuario) {
 
-        if (usuarioRepository.findByUserName(usuario.getUserName()).isPresent()) {
-        throw new ResponseStatusException(
-                HttpStatus.BAD_REQUEST
-        );
-    }
-        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+        validarUsernameUnico(usuario.getUserName());
 
-        boolean esAdmin = false;
+        try {
+            usuario.setRol(obtenerRolParaCreacion(usuario));
+            usuario.setPassword(passwordEncoder.encode(usuario.getPassword()));
 
-        if (auth != null && auth.getAuthorities() != null) {
-            esAdmin = auth.getAuthorities().stream()
-                    .anyMatch(a -> a.getAuthority().equals("ROLE_ADMIN"));
+            return usuarioRepository.save(usuario);
+
+        } catch (Exception e) {
+            throw new ResponseStatusException(
+                    HttpStatus.BAD_REQUEST,
+                    "El username o email ya existe");
         }
-
-        Rol rol;
-
-        // 🔥 SI ES ADMIN → puede elegir rol
-        if (esAdmin && usuario.getRol() != null && usuario.getRol().getIdRol() != null) {
-
-            rol = rolRepository.findById(usuario.getRol().getIdRol())
-                    .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Rol no existe"));
-
-        } 
-        // 🔥 SI NO → SIEMPRE USER
-        else {
-
-            rol = rolRepository.findById(1) // ROLE_USER
-                    .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Rol USER no existe"));
-        }
-
-        usuario.setRol(rol);
-
-        usuario.setPassword(passwordEncoder.encode(usuario.getPassword()));
-
-        return usuarioRepository.save(usuario);
     }
 
     public List<Usuario> get() {
@@ -75,42 +52,86 @@ public class UsuarioService {
         usuarioRepository.deleteById(id);
     }
 
-    // 🔥 UPDATE SEGURO
     public Usuario update(int id, Usuario usuario) {
 
-        Usuario existingUsuario = usuarioRepository.findById(id)
-                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Usuario no encontrado"));
+        Usuario existingUsuario = obtenerUsuarioPorId(id);
 
-        existingUsuario.setNombre(usuario.getNombre());
-        existingUsuario.setApellidoUno(usuario.getApellidoUno());
-        existingUsuario.setApellidoDos(usuario.getApellidoDos());
-        existingUsuario.setEmail(usuario.getEmail());
-        existingUsuario.setTelefono(usuario.getTelefono());
-
-        // 🔥 SOLO actualizar password si viene
-        if (usuario.getPassword() != null && !usuario.getPassword().isEmpty()) {
-            existingUsuario.setPassword(passwordEncoder.encode(usuario.getPassword()));
-        }
-
-        // 🔥 SOLO ADMIN puede cambiar rol
-        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
-
-        boolean esAdmin = auth.getAuthorities().stream()
-                .anyMatch(a -> a.getAuthority().equals("ROLE_ADMIN"));
-
-        if (esAdmin && usuario.getRol() != null) {
-            Rol rol = rolRepository.findById(usuario.getRol().getIdRol())
-                    .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Rol no existe"));
-
-            existingUsuario.setRol(rol);
-        }
+        actualizarUsernameSiCambio(existingUsuario, usuario);
+        actualizarDatosBasicos(existingUsuario, usuario);
+        actualizarPasswordSiViene(existingUsuario, usuario);
+        actualizarRolSiEsAdmin(existingUsuario, usuario);
 
         return usuarioRepository.save(existingUsuario);
     }
 
     public Usuario findByUsername(String username) {
         return usuarioRepository.findByUserName(username)
-                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Usuario no encontrado"));
+                .orElseThrow(() -> new ResponseStatusException(
+                        HttpStatus.NOT_FOUND, "Usuario no encontrado"));
     }
 
+    private void validarUsernameUnico(String username) {
+        if (usuarioRepository.findByUserName(username).isPresent()) {
+            throw new ResponseStatusException(
+                    HttpStatus.BAD_REQUEST,
+                    "El nombre de usuario ya existe");
+        }
+    }
+
+    private Usuario obtenerUsuarioPorId(int id) {
+        return usuarioRepository.findById(id)
+                .orElseThrow(() -> new ResponseStatusException(
+                        HttpStatus.NOT_FOUND, "Usuario no encontrado"));
+    }
+
+    private void actualizarUsernameSiCambio(Usuario existing, Usuario nuevo) {
+        if (!existing.getUserName().equals(nuevo.getUserName())) {
+            validarUsernameUnico(nuevo.getUserName());
+            existing.setUserName(nuevo.getUserName());
+        }
+    }
+
+    private void actualizarDatosBasicos(Usuario existing, Usuario nuevo) {
+        existing.setNombre(nuevo.getNombre());
+        existing.setApellidoUno(nuevo.getApellidoUno());
+        existing.setApellidoDos(nuevo.getApellidoDos());
+        existing.setEmail(nuevo.getEmail());
+        existing.setTelefono(nuevo.getTelefono());
+    }
+
+    private void actualizarPasswordSiViene(Usuario existing, Usuario nuevo) {
+        if (nuevo.getPassword() != null && !nuevo.getPassword().isEmpty()) {
+            existing.setPassword(passwordEncoder.encode(nuevo.getPassword()));
+        }
+    }
+
+    private void actualizarRolSiEsAdmin(Usuario existing, Usuario nuevo) {
+        if (esAdmin() && nuevo.getRol() != null) {
+            Rol rol = rolRepository.findById(nuevo.getRol().getIdRol())
+                    .orElseThrow(() -> new ResponseStatusException(
+                            HttpStatus.NOT_FOUND, "Rol no existe"));
+
+            existing.setRol(rol);
+        }
+    }
+
+    private boolean esAdmin() {
+        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+
+        return auth != null && auth.getAuthorities().stream()
+                .anyMatch(a -> a.getAuthority().equals("ROLE_ADMIN"));
+    }
+
+    private Rol obtenerRolParaCreacion(Usuario usuario) {
+
+        if (esAdmin() && usuario.getRol() != null && usuario.getRol().getIdRol() != null) {
+            return rolRepository.findById(usuario.getRol().getIdRol())
+                    .orElseThrow(() -> new ResponseStatusException(
+                            HttpStatus.NOT_FOUND, "Rol no existe"));
+        }
+
+        return rolRepository.findById(1)
+                .orElseThrow(() -> new ResponseStatusException(
+                        HttpStatus.NOT_FOUND, "Rol USER no existe"));
+    }
 }

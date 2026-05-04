@@ -9,6 +9,7 @@ import org.springframework.web.server.ResponseStatusException;
 import org.springframework.security.core.Authentication; // 🔥 IMPORTANTE
 
 import io.swagger.v3.oas.annotations.Operation;
+import proyectouno.api.dto.ReservaDTO;
 import proyectouno.api.entity.*;
 import proyectouno.api.service.*;
 
@@ -82,7 +83,8 @@ public class ReservaController {
     }
 
     @GetMapping("/estado/{estado}")
-    public List<Reserva> getByEstado(@PathVariable String estado) {
-        return reservaService.getByEstado(estado);
+    public List<ReservaDTO> getByEstado(@PathVariable String estado) {
+        return reservaService.getByEstadoDTO(estado);
     }
+
 }

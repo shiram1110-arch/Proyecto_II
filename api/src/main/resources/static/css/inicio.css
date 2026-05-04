@@ -138,6 +138,9 @@ body {
     color: white;
     border: 1px solid #222;
     transition: 0.3s;
+    max-width: 320px;  
+    margin: auto; 
+    top: 20px;
 }
 
 .card-custom:hover {
@@ -158,4 +161,11 @@ body {
 
 .footer img:hover {
     transform: scale(1.05);
+}
+
+.card-custom img {
+    width: 100%;
+    height: 100%;      /* 🔽 más pequeña */
+    object-fit: cover;
+    object-position: center;
 }

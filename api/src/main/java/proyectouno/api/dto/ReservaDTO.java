@@ -5,6 +5,8 @@ import java.time.LocalTime;
 
 public class ReservaDTO {
 
+    private Integer idReserva;
+    private String nombreUsuario;
     private String nombreClase;
     private Integer capacidad;
     private LocalDate fechaReserva;
@@ -12,6 +14,22 @@ public class ReservaDTO {
     private String estado;
 
     public ReservaDTO() {
+    }
+
+    public Integer getIdReserva() {
+        return idReserva;
+    }
+
+    public void setIdReserva(Integer idReserva) {
+        this.idReserva = idReserva;
+    }
+
+    public String getNombreUsuario() {
+        return nombreUsuario;
+    }
+
+    public void setNombreUsuario(String nombreUsuario) {
+        this.nombreUsuario = nombreUsuario;
     }
 
     public String getNombreClase() {

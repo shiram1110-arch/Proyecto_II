@@ -42,11 +42,11 @@ public class ClaseService {
             updateClase.setCapacidad(clase.getCapacidad());
             return claseRepository.save(updateClase);
         } else {
-           throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Clase no encontrada");
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Clase no encontrada");
         }
     }
 
-    public List<Clase> getClaseByDiaSemana(String diaSemana){
+    public List<Clase> getClaseByDiaSemana(String diaSemana) {
         return claseRepository.findByDiaSemanaOrderByHorarioAsc(diaSemana);
     }
 

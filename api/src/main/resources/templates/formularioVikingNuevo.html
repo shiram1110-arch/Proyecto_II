@@ -12,7 +12,7 @@
 <body>
     <br><br><br>
 
-    <div class="container d-flex justify-content-center align-items-center vh-100">
+    <div class="container d-flex justify-content-center align-items-center min-vh-100">
         <div class="card p-4 registro-card">
 
             <div class="text-center mb-3">
@@ -21,8 +21,8 @@
 
             <form id="registro">
 
-                <!-- 🔥 ID PARA EDITAR -->
-                <input type="hidden" name="idUsuario" th:value="${usuario?.idUsuario}">
+                <!-- ID PARA EDITAR -->
+                <input type="hidden" id="idUsuario" name="idUsuario" th:value="${usuario?.idUsuario}">
 
                 <input type="text" name="nombre" class="form-control mb-3" placeholder="Nombre"
                     th:value="${usuario?.nombre}" required>
@@ -43,8 +43,14 @@
                     <h3 class="fw-bold titulo">Registro de usuario</h3>
                 </div>
 
-                <input type="text" name="username" class="form-control mb-3" placeholder="Usuario"
+                <!-- USERNAME -->
+                <input type="text" id="username" name="username" class="form-control mb-1" placeholder="Usuario"
                     th:value="${usuario?.userName}" required>
+
+                <!-- MENSAJE ERROR -->
+                <div id="usernameError" class="text-danger mb-3" style="display:none;">
+                    El usuario ya existe
+                </div>
 
                 <input type="password" name="password" class="form-control mb-3" placeholder="Contraseña"
                     th:required="${usuario == null}">
@@ -63,24 +69,48 @@
         </div>
     </div>
 
-
     <script src="/js/auth.js"></script>
 
     <script>
-        document.getElementById("registro").addEventListener("submit", function (e) {
+        
+
+        const usernameInput = document.getElementById("username");
+        const usernameError = document.getElementById("usernameError");
+        const idUsuario = document.getElementById("idUsuario").value;
+
+        // 🔍 VALIDACIÓN EN BLUR
+        usernameInput.addEventListener("blur", async () => {
+
+            const username = usernameInput.value.trim();
+
+            if (!username) return;
+
+            try {
+                const res = await authFetch(`/usuarios/buscar/${encodeURIComponent(username)}`);
+                if (!res || !res.ok) return;
+
+                const data = await res.json();
+
+                const existe = data.some(u =>
+                    u.userName.toLowerCase() === username.toLowerCase()
+                    && u.idUsuario != idUsuario // 🔥 clave: ignorar mismo usuario
+                );
+
+                usernameError.style.display = existe ? "block" : "none";
+
+            } catch (e) {
+                console.error(e);
+            }
+        });
+
+        // 🚀 SUBMIT
+        document.getElementById("registro").addEventListener("submit", async function (e) {
             e.preventDefault();
 
-            const id = document.querySelector("[name=idUsuario]").value;
-
-
-            let rolId = 1;
-
-            if (isAdmin()) {
-                rolId = 2;
-            }
+            let rolId = isAdmin() ? 2 : 1;
 
             const data = {
-                userName: document.querySelector("[name=username]").value,
+                userName: usernameInput.value,
                 password: document.querySelector("[name=password]").value,
                 nombre: document.querySelector("[name=nombre]").value,
                 apellidoUno: document.querySelector("[name=apellidoUno]").value,
@@ -93,39 +123,44 @@
             let url = "/usuarios";
             let method = "POST";
 
-
-            if (id) {
-                url = `/usuarios/${id}`;
+            if (idUsuario) {
+                url = `/usuarios/${idUsuario}`;
                 method = "PUT";
-
 
                 if (!data.password) {
                     delete data.password;
                 }
             }
 
-            authFetch(url, {
-                method: method,
-                body: JSON.stringify(data)
-            })
-                .then(res => {
-                    if (!res) return;
-
-                    if (!res.ok) throw new Error("Error al guardar usuario");
-
-                    alert("✅ Usuario guardado");
-
-
-                    if (isAdmin()) {
-                        window.location.href = "/usuariosVista";
-                    } else {
-                        window.location.href = "/inicio";
-                    }
-                })
-                .catch(err => {
-                    console.error(err);
-                    alert(err.message);
+            try {
+                const res = await authFetch(url, {
+                    method: method,
+                    body: JSON.stringify(data)
                 });
+
+                if (!res) return;
+
+                if (!res.ok) {
+                    const error = await res.text();
+
+                    if (error.toLowerCase().includes("usuario") ||
+                        error.toLowerCase().includes("username")) {
+
+                        usernameError.style.display = "block";
+                        return;
+                    }
+
+                    throw new Error(error || "Error al guardar usuario");
+                }
+
+                alert("✅ Usuario guardado");
+
+                window.location.href = isAdmin() ? "/usuariosVista" : "/inicio";
+
+            } catch (err) {
+                console.error(err);
+                alert(err.message);
+            }
         });
     </script>
 
