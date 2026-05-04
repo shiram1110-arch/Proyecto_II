@@ -48,3 +48,14 @@ body {
     color: white;
     text-shadow: 0 0 10px red;
 }
+
+.link-light {
+    text-decoration: none;
+    color: white;
+    transition: 0.3s;
+}
+
+.link-light:hover {
+    color: #ff4d4d;
+    text-shadow: 0 0 6px red;
+}

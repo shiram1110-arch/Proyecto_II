@@ -145,13 +145,35 @@ body {
 }
 
 /* BOTÓN MÁS */
+/* BOTÓN MÁS (SIN SUBRAYADO + HOVER BLANCO SUAVE) */
 .btn-mas {
     background-color: black;
     color: white;
     border: none;
+
     padding: 6px 12px;
     border-radius: 8px;
-    transition: 0.3s;
+
+    text-decoration: none; /* 🔥 quita la línea */
+    font-weight: 500;
+
+    box-shadow: 0 0 4px rgba(255,255,255,0.2);
+
+    transition: all 0.25s ease;
+}
+
+.btn-mas:hover {
+    color: white;
+    text-decoration: none; /* 🔥 por si acaso */
+
+    background-color: #111;
+
+    /* 🔥 efecto blanco suave */
+    box-shadow: 
+        0 0 6px rgba(255,255,255,0.4),
+        0 0 10px rgba(255,255,255,0.2);
+
+    transform: scale(1.05);
 }
 
 /* FOOTER */
