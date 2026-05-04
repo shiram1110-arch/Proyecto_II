@@ -20,10 +20,8 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import proyectouno.api.entity.Clase;
 import proyectouno.api.service.ClaseService;
 
-
-@CrossOrigin(origins = "*") // Permitir acceso desde cualquier origen
+@CrossOrigin(origins = "*")
 @Tag(name = "Clases", description = "API para gestionar clases")
-// Grupo en Swagger
 @RestController
 @RequestMapping("/clases")
 
@@ -39,7 +37,7 @@ public class ClaseController {
 
     @GetMapping("/clases/{diaSemana}")
     @Operation(summary = "Obtener todas las clases según el día", description = "Devuelve una lista de clases según el dia")
-    public List<Clase> getClasesPorDia(@PathVariable String diaSemana){
+    public List<Clase> getClasesPorDia(@PathVariable String diaSemana) {
         return claseService.getClaseByDiaSemana(diaSemana);
     }
 
@@ -68,7 +66,7 @@ public class ClaseController {
     public void delete(@PathVariable int id) {
         claseService.delete(id);
     }
-    
+
     @GetMapping("/buscar/{nombre}")
     public List<Clase> buscar(@PathVariable String nombre) {
         return claseService.buscarPorNombre(nombre);

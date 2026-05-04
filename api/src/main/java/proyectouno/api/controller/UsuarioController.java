@@ -10,8 +10,8 @@ import proyectouno.api.service.UsuarioService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 
-@CrossOrigin(origins = "*") // Permitir acceso desde cualquier origen
-@Tag(name = "Usuarios", description = "API para gestionar usuarios") // Grupo en Swagger
+@CrossOrigin(origins = "*")
+@Tag(name = "Usuarios", description = "API para gestionar usuarios")
 @RestController
 @RequestMapping("/usuarios")
 public class UsuarioController {

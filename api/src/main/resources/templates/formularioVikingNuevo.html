@@ -21,7 +21,6 @@
 
             <form id="registro">
 
-                <!-- ID PARA EDITAR -->
                 <input type="hidden" id="idUsuario" name="idUsuario" th:value="${usuario?.idUsuario}">
 
                 <input type="text" name="nombre" class="form-control mb-3" placeholder="Nombre"
@@ -43,11 +42,9 @@
                     <h3 class="fw-bold titulo">Registro de usuario</h3>
                 </div>
 
-                <!-- USERNAME -->
                 <input type="text" id="username" name="username" class="form-control mb-1" placeholder="Usuario"
                     th:value="${usuario?.userName}" required>
 
-                <!-- MENSAJE ERROR -->
                 <div id="usernameError" class="text-danger mb-3" style="display:none;">
                     El usuario ya existe
                 </div>
@@ -72,13 +69,12 @@
     <script src="/js/auth.js"></script>
 
     <script>
-        
+
 
         const usernameInput = document.getElementById("username");
         const usernameError = document.getElementById("usernameError");
         const idUsuario = document.getElementById("idUsuario").value;
 
-        // 🔍 VALIDACIÓN EN BLUR
         usernameInput.addEventListener("blur", async () => {
 
             const username = usernameInput.value.trim();
@@ -93,7 +89,7 @@
 
                 const existe = data.some(u =>
                     u.userName.toLowerCase() === username.toLowerCase()
-                    && u.idUsuario != idUsuario // 🔥 clave: ignorar mismo usuario
+                    && u.idUsuario != idUsuario
                 );
 
                 usernameError.style.display = existe ? "block" : "none";
@@ -103,7 +99,6 @@
             }
         });
 
-        // 🚀 SUBMIT
         document.getElementById("registro").addEventListener("submit", async function (e) {
             e.preventDefault();
 

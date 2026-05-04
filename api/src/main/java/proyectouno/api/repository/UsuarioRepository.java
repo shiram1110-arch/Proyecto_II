@@ -6,6 +6,6 @@ import org.springframework.data.jpa.repository.JpaRepository;
 
 import proyectouno.api.entity.Usuario;
 
-public interface UsuarioRepository extends JpaRepository<Usuario, Integer>{
+public interface UsuarioRepository extends JpaRepository<Usuario, Integer> {
     Optional<Usuario> findByUserName(String userName);
 }

@@ -29,33 +29,25 @@ public class SecurityConfig {
 
                                 .authorizeHttpRequests(auth -> auth
 
-                                                // 🔓 LOGIN
                                                 .requestMatchers("/registroCompleto/login").permitAll()
 
-                                                // 🔓 REGISTRO USUARIO
                                                 .requestMatchers(HttpMethod.POST, "/usuarios").permitAll()
 
-                                                // 🔒 API USUARIOS (SOLO ADMIN)
                                                 .requestMatchers(HttpMethod.GET, "/usuarios").hasRole("ADMIN")
                                                 .requestMatchers(HttpMethod.PUT, "/usuarios/**").hasRole("ADMIN")
                                                 .requestMatchers(HttpMethod.DELETE, "/usuarios/**").hasRole("ADMIN")
 
-                                                // 🔥 IMPORTANTE: PERMITIR VISTA EDITAR
                                                 .requestMatchers("/usuarios/editar/**").permitAll()
 
-                                                // 🔓 CLASES públicas
                                                 .requestMatchers(HttpMethod.GET, "/clases/**").permitAll()
                                                 .requestMatchers("/api/reservas/mis-clases").permitAll()
 
-                                                // 🔒 CLASES ADMIN
                                                 .requestMatchers(HttpMethod.POST, "/clases/**").hasRole("ADMIN")
                                                 .requestMatchers(HttpMethod.PUT, "/clases/**").hasRole("ADMIN")
                                                 .requestMatchers(HttpMethod.DELETE, "/clases/**").hasRole("ADMIN")
 
-                                                // 🔒 RESERVAS ADMIN
                                                 .requestMatchers(HttpMethod.DELETE, "/api/reservas/**").hasRole("ADMIN")
 
-                                                // 🔓 VISTAS (HTML)
                                                 .requestMatchers(
                                                                 "/", "/inicio", "/login", "/registro",
                                                                 "/formularioVikingNuevo",
@@ -70,19 +62,16 @@ public class SecurityConfig {
 
                                                 .anyRequest().authenticated())
 
-                                // 🔐 FILTRO JWT
                                 .addFilterBefore(jwtRequestFilter, UsernamePasswordAuthenticationFilter.class)
 
                                 .build();
         }
 
-        // 🔑 Authentication Manager
         @Bean
         public AuthenticationManager authenticationManager(AuthenticationConfiguration config) throws Exception {
                 return config.getAuthenticationManager();
         }
 
-        // 🔒 Password encoder
         @Bean
         public PasswordEncoder passwordEncoder() {
                 return new BCryptPasswordEncoder();

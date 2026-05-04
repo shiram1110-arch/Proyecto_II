@@ -20,10 +20,6 @@ public class DataLoader {
 
         return args -> {
 
-            // =========================
-            // CREAR ROLES SI NO EXISTEN
-            // =========================
-
             Rol userRole = rolRepository.findByNombre("ROLE_USER")
                     .orElseGet(() -> {
                         Rol r = new Rol();
@@ -37,10 +33,6 @@ public class DataLoader {
                         r.setNombre("ROLE_ADMIN");
                         return rolRepository.save(r);
                     });
-
-            // =========================
-            // CREAR USUARIO NORMAL
-            // =========================
 
             if (userRepository.findByUserName("usuario").isEmpty()) {
 
@@ -57,10 +49,6 @@ public class DataLoader {
 
                 userRepository.save(user);
             }
-
-            // =========================
-            // CREAR ADMIN
-            // =========================
 
             if (userRepository.findByUserName("admin").isEmpty()) {
 

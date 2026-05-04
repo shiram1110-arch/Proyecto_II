@@ -8,8 +8,8 @@ body {
     background: rgba(20, 20, 20, 0.95);
     border: 1px solid #333;
     border-radius: 15px;
-    box-shadow: 0 0 25px rgba(0,0,0,0.8);
-    
+    box-shadow: 0 0 25px rgba(0, 0, 0, 0.8);
+
 }
 
 .titulo {
@@ -55,6 +55,7 @@ a {
 a:hover {
     color: #ff1a1a;
 }
+
 .logo {
     width: 90px;
     filter: drop-shadow(0 0 15px red);

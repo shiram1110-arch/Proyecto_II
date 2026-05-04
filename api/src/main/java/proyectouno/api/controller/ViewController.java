@@ -1,6 +1,5 @@
 package proyectouno.api.controller;
 
-
 import java.util.Optional;
 
 import org.springframework.stereotype.Controller;
@@ -128,6 +127,4 @@ public class ViewController {
 
         return "formularioVikingNuevo";
     }
-
-    
 }

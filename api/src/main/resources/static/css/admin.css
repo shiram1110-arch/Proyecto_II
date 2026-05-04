@@ -4,19 +4,17 @@ body {
     margin: 0;
 }
 
-/* HEADER */
 .header {
     background: rgba(20, 20, 20, 0.95);
     border-bottom: 1px solid #333;
-    box-shadow: 0 0 15px rgba(255,0,0,0.2);
+    box-shadow: 0 0 15px rgba(255, 0, 0, 0.2);
 }
 
-/* TARJETAS */
 .registro-card {
     background: rgba(20, 20, 20, 0.95);
     border: 1px solid #333;
     border-radius: 15px;
-    box-shadow: 0 0 25px rgba(255,0,0,0.2);
+    box-shadow: 0 0 25px rgba(255, 0, 0, 0.2);
     cursor: pointer;
     transition: 0.3s;
 }
@@ -26,7 +24,6 @@ body {
     box-shadow: 0 0 25px red;
 }
 
-/* TEXTOS */
 .titulo {
     color: white;
     text-shadow: 0 0 12px red;
@@ -43,15 +40,15 @@ body {
     border: 2px solid rgba(255, 0, 0, 0.3);
     border-radius: 6px;
 
-    padding: 5px 14px; /* 🔥 más pequeño */
-    font-size: 14px;   /* 🔥 texto más compacto */
+    padding: 5px 14px;
+    font-size: 14px;
 
     font-weight: 600;
     letter-spacing: 0.5px;
 
     text-shadow: 0 0 2px rgba(255, 255, 255, 0.4);
 
-    box-shadow: 
+    box-shadow:
         0 0 5px rgba(255, 0, 0, 0.3),
         0 0 8px rgba(255, 0, 0, 0.15) inset;
 
@@ -59,14 +56,13 @@ body {
 }
 
 .btn-login-neon:hover {
-    box-shadow: 
+    box-shadow:
         0 0 8px rgba(255, 0, 0, 0.5),
         0 0 12px rgba(255, 0, 0, 0.25) inset;
 
     transform: scale(1.03);
 }
 
-/* LOGO */
 .logo {
     width: 80px;
     filter: drop-shadow(0 0 10px red);

@@ -44,6 +44,7 @@ body {
 .btn-primary:hover {
     background-color: #ff1a1a;
 }
+
 .titulo {
     color: white;
     text-shadow: 0 0 10px red;

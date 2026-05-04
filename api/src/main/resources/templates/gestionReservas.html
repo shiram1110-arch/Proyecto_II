@@ -18,168 +18,159 @@
 
 <body>
 
-<nav class="navbar header px-4">
-    <div class="d-flex align-items-center">
-        <img src="/img/logo.png" class="logo me-2">
-        <h4 class="titulo m-0">Administración de Reservas</h4>
-    </div>
+    <nav class="navbar header px-4">
+        <div class="d-flex align-items-center">
+            <img src="/img/logo.png" class="logo me-2">
+            <h4 class="titulo m-0">Administración de Reservas</h4>
+        </div>
 
-    <div class="d-flex gap-2">
-        <a href="/adminDashboard" class="btn btn-login-neon">Volver</a>
-    </div>
-</nav>
+        <div class="d-flex gap-2">
+            <a href="/adminDashboard" class="btn btn-login-neon">Volver</a>
+        </div>
+    </nav>
 
-<div class="container mt-5">
+    <div class="container mt-5">
 
-    <div class="text-center mb-4">
-        <h2 class="titulo">Lista de Reservas</h2>
-        <p class="subtitulo">Visualiza, cancela o elimina reservas</p>
-    </div>
+        <div class="text-center mb-4">
+            <h2 class="titulo">Lista de Reservas</h2>
+            <p class="subtitulo">Visualiza, cancela o elimina reservas</p>
+        </div>
 
-    <!-- 🔥 FILTROS -->
-    <div class="mb-4 d-flex gap-2 justify-content-center flex-wrap">
-        <button class="btn btn-outline-light filtro-btn" onclick="filtrar('', this)">Todas</button>
-        <button class="btn btn-outline-success filtro-btn" onclick="filtrar('ACTIVA', this)">Activas</button>
-        <button class="btn btn-outline-warning filtro-btn" onclick="filtrar('CANCELADA', this)">Canceladas</button>
-        <button class="btn btn-outline-info filtro-btn" onclick="filtrar('FINALIZADA', this)">Finalizadas</button>
-    </div>
+        <div class="mb-4 d-flex gap-2 justify-content-center flex-wrap">
+            <button class="btn btn-outline-light filtro-btn" onclick="filtrar('', this)">Todas</button>
+            <button class="btn btn-outline-success filtro-btn" onclick="filtrar('ACTIVA', this)">Activas</button>
+            <button class="btn btn-outline-warning filtro-btn" onclick="filtrar('CANCELADA', this)">Canceladas</button>
+            <button class="btn btn-outline-info filtro-btn" onclick="filtrar('FINALIZADA', this)">Finalizadas</button>
+        </div>
 
-    <div class="registro-card p-4">
+        <div class="registro-card p-4">
 
-        <table class="table table-dark table-hover text-center align-middle">
-            <thead>
-                <tr>
-                    <th>Usuario</th>
-                    <th>Clase</th>
-                    <th>Fecha</th>
-                    <th>Estado</th>
-                    <th>Acciones</th>
-                </tr>
-            </thead>
+            <table class="table table-dark table-hover text-center align-middle">
+                <thead>
+                    <tr>
+                        <th>Usuario</th>
+                        <th>Clase</th>
+                        <th>Fecha</th>
+                        <th>Estado</th>
+                        <th>Acciones</th>
+                    </tr>
+                </thead>
 
-            <!-- 🔥 CARGA INICIAL -->
-            <tbody id="tbodyReservas">
-                <tr th:each="reserva : ${reservas}">
-                    <td th:text="${reserva.usuario.nombre}"></td>
-                    <td th:text="${reserva.clase.nombre}"></td>
-                    <td th:text="${#temporals.format(reserva.fechaReserva, 'yyyy-MM-dd')}"></td>
+                <tbody id="tbodyReservas">
+                    <tr th:each="reserva : ${reservas}">
+                        <td th:text="${reserva.usuario.nombre}"></td>
+                        <td th:text="${reserva.clase.nombre}"></td>
+                        <td th:text="${#temporals.format(reserva.fechaReserva, 'yyyy-MM-dd')}"></td>
 
-                    <!-- COLOR DE ESTADO -->
-                    <td>
-                        <span th:text="${reserva.estado}"
-                              th:classappend="${reserva.estado == 'ACTIVA'} ? 'text-success' :
+                        <td>
+                            <span th:text="${reserva.estado}" th:classappend="${reserva.estado == 'ACTIVA'} ? 'text-success' :
                                               (${reserva.estado == 'CANCELADA'} ? 'text-warning' : 'text-info')">
-                        </span>
-                    </td>
+                            </span>
+                        </td>
 
-                    <td>
+                        <td>
 
-                        <!-- 🔥 CANCELAR -->
-                        <button class="btn btn-sm btn-warning"
-                            th:onclick="'cancelarReserva(' + ${reserva.idReserva} + ')'"
-                            th:disabled="${reserva.estado == 'CANCELADA'}">
-                            Cancelar
-                        </button>
+                            <button class="btn btn-sm btn-warning"
+                                th:onclick="'cancelarReserva(' + ${reserva.idReserva} + ')'"
+                                th:disabled="${reserva.estado == 'CANCELADA'}">
+                                Cancelar
+                            </button>
 
-                        <!-- ❌ ELIMINAR -->
-                        <button class="btn btn-sm btn-danger"
-                            th:onclick="'eliminarReserva(' + ${reserva.idReserva} + ')'">
-                            Eliminar
-                        </button>
+                            <button class="btn btn-sm btn-danger"
+                                th:onclick="'eliminarReserva(' + ${reserva.idReserva} + ')'">
+                                Eliminar
+                            </button>
 
-                    </td>
-                </tr>
-            </tbody>
+                        </td>
+                    </tr>
+                </tbody>
 
-        </table>
+            </table>
+
+        </div>
 
     </div>
 
-</div>
+    <script src="/js/auth.js"></script>
 
-<script src="/js/auth.js"></script>
+    <script>
+        requireAdmin();
 
-<script>
-requireAdmin();
+        function eliminarReserva(id) {
 
-// ❌ ELIMINAR
-function eliminarReserva(id) {
+            if (!confirm("¿Seguro que deseas eliminar esta reserva?")) return;
 
-    if (!confirm("¿Seguro que deseas eliminar esta reserva?")) return;
+            authFetch(`/api/reservas/${id}`, {
+                method: "DELETE"
+            })
+                .then(res => {
+                    if (!res.ok) throw new Error("Error al eliminar reserva");
 
-    authFetch(`/api/reservas/${id}`, {
-        method: "DELETE"
-    })
-    .then(res => {
-        if (!res.ok) throw new Error("Error al eliminar reserva");
+                    alert("🗑️ Reserva eliminada");
+                    location.reload();
+                })
+                .catch(err => {
+                    console.error(err);
+                    alert(err.message);
+                });
+        }
 
-        alert("🗑️ Reserva eliminada");
-        location.reload();
-    })
-    .catch(err => {
-        console.error(err);
-        alert(err.message);
-    });
-}
+        function cancelarReserva(id) {
 
-// ⚠️ CANCELAR
-function cancelarReserva(id) {
+            if (!confirm("¿Seguro que deseas cancelar esta reserva?")) return;
 
-    if (!confirm("¿Seguro que deseas cancelar esta reserva?")) return;
+            authFetch(`/api/reservas/cancelar/${id}`, {
+                method: "PUT"
+            })
+                .then(res => {
+                    if (!res.ok) throw new Error("Error al cancelar");
 
-    authFetch(`/api/reservas/cancelar/${id}`, {
-        method: "PUT"
-    })
-    .then(res => {
-        if (!res.ok) throw new Error("Error al cancelar");
+                    alert("⚠️ Reserva cancelada");
+                    location.reload();
+                })
+                .catch(err => {
+                    console.error(err);
+                    alert(err.message);
+                });
+        }
 
-        alert("⚠️ Reserva cancelada");
-        location.reload();
-    })
-    .catch(err => {
-        console.error(err);
-        alert(err.message);
-    });
-}
+        function filtrar(estado, btn) {
 
-// 🔍 FILTRAR
-function filtrar(estado, btn) {
+            document.querySelectorAll(".filtro-btn")
+                .forEach(b => b.classList.remove("filtro-activo"));
 
-    document.querySelectorAll(".filtro-btn")
-        .forEach(b => b.classList.remove("filtro-activo"));
+            if (btn) btn.classList.add("filtro-activo");
 
-    if (btn) btn.classList.add("filtro-activo");
+            if (estado === "") {
+                location.reload();
+                return;
+            }
 
-    if (estado === "") {
-        location.reload();
-        return;
-    }
+            authFetch(`/api/reservas/estado/${estado}`)
+                .then(res => res.json())
+                .then(data => {
 
-    authFetch(`/api/reservas/estado/${estado}`)
-        .then(res => res.json())
-        .then(data => {
+                    let tbody = document.getElementById("tbodyReservas");
+                    tbody.innerHTML = "";
 
-            let tbody = document.getElementById("tbodyReservas");
-            tbody.innerHTML = "";
-
-            if (data.length === 0) {
-                tbody.innerHTML = `
+                    if (data.length === 0) {
+                        tbody.innerHTML = `
                     <tr>
                         <td colspan="5">No hay reservas</td>
                     </tr>
                 `;
-                return;
-            }
+                        return;
+                    }
 
-            data.forEach(r => {
+                    data.forEach(r => {
 
-                let color = r.estado === "ACTIVA" ? "text-success" :
+                        let color = r.estado === "ACTIVA" ? "text-success" :
                             r.estado === "CANCELADA" ? "text-warning" :
-                            "text-info";
+                                "text-info";
 
-                let disabled = r.estado === "CANCELADA" ? "disabled" : "";
+                        let disabled = r.estado === "CANCELADA" ? "disabled" : "";
 
-                tbody.innerHTML += `
+                        tbody.innerHTML += `
                 <tr>
                     <td>${r.nombreUsuario}</td>
                     <td>${r.nombreClase}</td>
@@ -198,15 +189,16 @@ function filtrar(estado, btn) {
                     </td>
                 </tr>
                 `;
-            });
+                    });
 
-        })
-        .catch(err => {
-            console.error(err);
-            alert("Error al filtrar");
-        });
-}
-</script>
+                })
+                .catch(err => {
+                    console.error(err);
+                    alert("Error al filtrar");
+                });
+        }
+    </script>
 
 </body>
+
 </html>

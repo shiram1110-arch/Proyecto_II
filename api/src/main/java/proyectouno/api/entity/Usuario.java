@@ -11,8 +11,8 @@ import lombok.*;
 @Table(name = "usuarios")
 @Getter
 @Setter
-@ToString(exclude = {"reservas"})
-@EqualsAndHashCode(exclude = {"reservas"})
+@ToString(exclude = { "reservas" })
+@EqualsAndHashCode(exclude = { "reservas" })
 @AllArgsConstructor
 @NoArgsConstructor
 
@@ -30,18 +30,14 @@ public class Usuario {
     private String email;
     @Column(name = "telefono", nullable = false)
     private String telefono;
-    @Column(name = "userName",  nullable = false, unique = true)
+    @Column(name = "userName", nullable = false, unique = true)
     private String userName;
     @Column(name = "password", nullable = false)
     private String password;
     @ManyToOne
-    @JoinColumn(name = "idRol", nullable = false) 
+    @JoinColumn(name = "idRol", nullable = false)
     private Rol rol;
     @OneToMany(mappedBy = "usuario")
     @JsonIgnore
     private List<Reserva> reservas;
-
-    
-
-
 }

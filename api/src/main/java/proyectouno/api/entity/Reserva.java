@@ -11,8 +11,8 @@ import lombok.*;
 @Table(name = "reservas")
 @Getter
 @Setter
-@ToString(exclude = {"usuario", "clase"})
-@EqualsAndHashCode(exclude = {"usuario", "clase"})
+@ToString(exclude = { "usuario", "clase" })
+@EqualsAndHashCode(exclude = { "usuario", "clase" })
 
 public class Reserva {
     @Id
@@ -28,7 +28,7 @@ public class Reserva {
     @JsonIgnoreProperties("reservas")
     @JoinColumn(name = "idClase", nullable = false)
     private Clase clase;
-    
+
     @Column(name = "fechaReserva", nullable = false)
     private LocalDate fechaReserva;
     @Column(name = "estado", nullable = false)

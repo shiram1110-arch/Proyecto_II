@@ -5,13 +5,12 @@ body {
     font-family: 'Segoe UI', sans-serif;
 }
 
-/* HEADER / NAV */
 .header {
     width: 100%;
     background: linear-gradient(90deg, #0f0f0f, #1a1a1a, #0f0f0f);
     border-bottom: 1px solid rgba(255, 0, 0, 0.3);
     box-shadow: 0 0 8px rgba(255, 0, 0, 0.4);
-    
+
     display: flex;
     align-items: center;
     justify-content: space-between;
@@ -24,7 +23,6 @@ body {
     z-index: 1000;
 }
 
-/* BOTÓN (MISMO QUE HISTORIAL) */
 .btn-login-neon {
     background: transparent;
     color: #ffffff !important;
@@ -32,15 +30,15 @@ body {
     border: 2px solid rgba(255, 0, 0, 0.3);
     border-radius: 6px;
 
-    padding: 5px 14px; /* 🔥 más pequeño */
-    font-size: 14px;   /* 🔥 texto más compacto */
+    padding: 5px 14px;
+    font-size: 14px;
 
     font-weight: 600;
     letter-spacing: 0.5px;
 
     text-shadow: 0 0 2px rgba(255, 255, 255, 0.4);
 
-    box-shadow: 
+    box-shadow:
         0 0 5px rgba(255, 0, 0, 0.3),
         0 0 8px rgba(255, 0, 0, 0.15) inset;
 
@@ -48,26 +46,24 @@ body {
 }
 
 .btn-login-neon:hover {
-    box-shadow: 
+    box-shadow:
         0 0 8px rgba(255, 0, 0, 0.5),
         0 0 12px rgba(255, 0, 0, 0.25) inset;
 
     transform: scale(1.03);
 }
-/* TÍTULO */
+
 .titulo {
     color: white;
     text-shadow: 0 0 10px red;
     font-weight: bold;
 }
 
-/* LOGO */
 .logo {
     width: 60px;
     filter: drop-shadow(0 0 10px red);
 }
 
-/* SUBTÍTULO */
 .subtitulo-dia {
     color: #ccc;
     font-size: 14px;
@@ -75,7 +71,6 @@ body {
     text-align: center;
 }
 
-/* DÍAS */
 .dias {
     display: flex;
     justify-content: center;
@@ -104,7 +99,6 @@ body {
     background-color: #b30000;
 }
 
-/* LISTA DE CLASES */
 .lista-clases {
     width: 100%;
     max-width: 800px;
@@ -144,8 +138,6 @@ body {
     font-weight: bold;
 }
 
-/* BOTÓN MÁS */
-/* BOTÓN MÁS (SIN SUBRAYADO + HOVER BLANCO SUAVE) */
 .btn-mas {
     background-color: black;
     color: white;
@@ -154,29 +146,27 @@ body {
     padding: 6px 12px;
     border-radius: 8px;
 
-    text-decoration: none; /* 🔥 quita la línea */
+    text-decoration: none;
     font-weight: 500;
 
-    box-shadow: 0 0 4px rgba(255,255,255,0.2);
+    box-shadow: 0 0 4px rgba(255, 255, 255, 0.2);
 
     transition: all 0.25s ease;
 }
 
 .btn-mas:hover {
     color: white;
-    text-decoration: none; /* 🔥 por si acaso */
+    text-decoration: none;
 
     background-color: #111;
 
-    /* 🔥 efecto blanco suave */
-    box-shadow: 
-        0 0 6px rgba(255,255,255,0.4),
-        0 0 10px rgba(255,255,255,0.2);
+    box-shadow:
+        0 0 6px rgba(255, 255, 255, 0.4),
+        0 0 10px rgba(255, 255, 255, 0.2);
 
     transform: scale(1.05);
 }
 
-/* FOOTER */
 .footer {
     background: radial-gradient(circle at center, #1a1a1a, #000000);
     color: white;

@@ -28,7 +28,6 @@ public class JwtUtil {
         return Keys.hmacShaKeyFor(keyBytes);
     }
 
-    // 🔥 GENERAR TOKEN CON ROLES
     public String generateToken(UserDetails userDetails) {
         Date now = new Date();
         Date expiryDate = new Date(now.getTime() + expiration);
@@ -40,7 +39,7 @@ public class JwtUtil {
 
         return Jwts.builder()
                 .subject(userDetails.getUsername())
-                .claim("roles", roles) // 🔥 CLAVE
+                .claim("roles", roles)
                 .issuedAt(now)
                 .expiration(expiryDate)
                 .signWith(getSigningKey(), Jwts.SIG.HS256)
@@ -64,7 +63,6 @@ public class JwtUtil {
         return extractExpiration(token).before(new Date());
     }
 
-    // 🔥 IMPORTANTE: PUBLIC
     public Claims extractAllClaims(String token) {
         return Jwts.parser()
                 .verifyWith(getSigningKey())

@@ -44,7 +44,7 @@
                 <div class="text-center mb-4">
                     <br>
                     <img src="/img/logo.png" alt="logo" class="logo">
-                    
+
                 </div>
 
             </form>
@@ -53,9 +53,8 @@
 
     </div>
 
-    <!-- 🔐 AUTH -->
     <script src="/js/auth.js"></script>
-    
+
 
     <script>
         document.getElementById("loginForm").addEventListener("submit", function (e) {
@@ -74,20 +73,19 @@
                     password: password
                 })
             })
-            .then(res => {
-                if (!res.ok) throw new Error("Credenciales inválidas");
-                return res.json();
-            })
-            .then(data => {
-                // 🔐 Guardar token usando auth.js
-                setToken(data.token);
+                .then(res => {
+                    if (!res.ok) throw new Error("Credenciales inválidas");
+                    return res.json();
+                })
+                .then(data => {
+                    s
+                    setToken(data.token);
 
-                // 🚀 Redirigir
-                window.location.href = "/inicio";
-            })
-            .catch(err => {
-                alert(err.message);
-            });
+                    window.location.href = "/inicio";
+                })
+                .catch(err => {
+                    alert(err.message);
+                });
         });
     </script>
 

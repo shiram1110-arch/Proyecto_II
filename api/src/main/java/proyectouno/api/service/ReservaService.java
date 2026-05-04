@@ -20,7 +20,6 @@ public class ReservaService {
     private ReservaRepository reservaRepository;
     private ClaseService claseService;
 
-    // 🔥 CREATE
     public Reserva add(Reserva reserva) {
 
         validarDatosReserva(reserva);
@@ -28,17 +27,14 @@ public class ReservaService {
 
         Clase clase = reserva.getClase();
 
-        // 🔥 VALIDAR CUPOS
         if (clase.getCapacidad() <= 0) {
             throw new ResponseStatusException(
                     HttpStatus.BAD_REQUEST,
                     "No hay cupos disponibles");
         }
 
-        // 🔥 RESTAR CUPO
         clase.setCapacidad(clase.getCapacidad() - 1);
 
-        // 🔥 GUARDAR CAMBIO EN CLASE
         claseService.save(clase);
 
         completarDatosPorDefecto(reserva);
@@ -46,31 +42,26 @@ public class ReservaService {
         return reservaRepository.save(reserva);
     }
 
-    // 📄 GET ALL
     public List<Reserva> get() {
         return reservaRepository.findAll();
     }
 
-    // 🔍 GET BY ID
     public Optional<Reserva> getById(int id) {
         return reservaRepository.findById(id);
     }
 
-    // ❌ DELETE
     public void delete(int id) {
 
         Reserva reserva = obtenerReservaPorId(id);
 
         Clase clase = reserva.getClase();
 
-        // 🔥 DEVOLVER CUPO
         clase.setCapacidad(clase.getCapacidad() + 1);
         claseService.save(clase);
 
         reservaRepository.deleteById(id);
     }
 
-    // 🔄 UPDATE
     public Reserva update(int id, Reserva reserva) {
 
         Reserva existing = obtenerReservaPorId(id);
@@ -79,17 +70,12 @@ public class ReservaService {
         return reservaRepository.save(existing);
     }
 
-    // 🔍 FILTRAR POR ESTADO (DTO)
     public List<ReservaDTO> getByEstadoDTO(String estado) {
         return reservaRepository.findByEstadoIgnoreCase(estado)
                 .stream()
                 .map(this::convertirADTO)
                 .toList();
     }
-
-    // =========================
-    // 🧩 MÉTODOS PRIVADOS
-    // =========================
 
     private void validarDatosReserva(Reserva reserva) {
         if (reserva.getClase() == null) {
@@ -172,10 +158,8 @@ public class ReservaService {
                     "La reserva ya está cancelada");
         }
 
-        // 🔥 cambiar estado
         reserva.setEstado("CANCELADA");
 
-        // 🔥 devolver cupo
         Clase clase = reserva.getClase();
         clase.setCapacidad(clase.getCapacidad() + 1);
         claseService.save(clase);

@@ -6,7 +6,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
-import org.springframework.security.core.Authentication; // 🔥 IMPORTANTE
+import org.springframework.security.core.Authentication;
 
 import io.swagger.v3.oas.annotations.Operation;
 import proyectouno.api.dto.ReservaDTO;
@@ -24,11 +24,9 @@ public class ReservaController {
     @Autowired
     private ReservaService reservaService;
 
-    // 🔥 AGREGADO
     @Autowired
     private UsuarioService usuarioService;
 
-    // 🔥 AGREGADO
     @Autowired
     private ClaseService claseService;
 
@@ -47,9 +45,8 @@ public class ReservaController {
 
     @PostMapping
     @Operation(summary = "Crear una nueva reserva", description = "Agrega una nueva reserva a la base de datos")
-    public Reserva add(@RequestBody Reserva reserva, Authentication auth) { // 🔥 AGREGADO auth
+    public Reserva add(@RequestBody Reserva reserva, Authentication auth) {
 
-        // 🔐 obtener usuario desde JWT
         String username = auth.getName();
 
         Usuario usuario = usuarioService.findByUsername(username);
@@ -58,10 +55,8 @@ public class ReservaController {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Usuario no encontrado");
         }
 
-        // 🔥 asignar usuario
         reserva.setUsuario(usuario);
 
-        // 🔥 validar y asignar clase real
         Clase clase = claseService.getById(reserva.getClase().getIdClase())
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Clase no encontrada"));
 

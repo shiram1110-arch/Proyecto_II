@@ -19,7 +19,6 @@ public class ApiController {
     private ReservaService reservaService;
     private UsuarioService usuarioService;
 
-    
     @GetMapping("/mis-clases")
     public List<ReservaDTO> getReservas(Authentication authentication) {
 

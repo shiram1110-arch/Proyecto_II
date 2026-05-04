@@ -11,96 +11,97 @@
 
 <body>
 
-<nav class="navbar header px-4">
-    <div class="d-flex align-items-center">
-        <img src="/img/logo.png" class="logo me-2">
-        <h4 class="titulo m-0">Administración de Usuarios</h4>
-    </div>
+    <nav class="navbar header px-4">
+        <div class="d-flex align-items-center">
+            <img src="/img/logo.png" class="logo me-2">
+            <h4 class="titulo m-0">Administración de Usuarios</h4>
+        </div>
 
-    <div class="d-flex gap-2">
-        <button class="btn btn-main" onclick="window.location.href='/registro'">
-            + Crear Usuario
-        </button>
-        <a href="/adminDashboard" class="btn btn-login-neon">Volver</a>
-    </div>
-</nav>
+        <div class="d-flex gap-2">
+            <button class="btn btn-main" onclick="window.location.href='/registro'">
+                + Crear Usuario
+            </button>
+            <a href="/adminDashboard" class="btn btn-login-neon">Volver</a>
+        </div>
+    </nav>
 
-<div class="container mt-5">
+    <div class="container mt-5">
 
-    <div class="text-center mb-4">
-        <h2 class="titulo">Lista de Usuarios</h2>
-        <p class="subtitulo">Administra los usuarios del sistema</p>
-    </div>
+        <div class="text-center mb-4">
+            <h2 class="titulo">Lista de Usuarios</h2>
+            <p class="subtitulo">Administra los usuarios del sistema</p>
+        </div>
 
-    <div class="registro-card p-4">
+        <div class="registro-card p-4">
 
-        <table class="table table-dark table-hover text-center align-middle">
-            <thead>
-                <tr>
-                    <th>Nombre</th>
-                    <th>Apellidos</th>
-                    <th>Email</th>
-                    <th>Teléfono</th>
-                    <th>Usuario</th>
-                    <th>Acciones</th>
-                </tr>
-            </thead>
+            <table class="table table-dark table-hover text-center align-middle">
+                <thead>
+                    <tr>
+                        <th>Nombre</th>
+                        <th>Apellidos</th>
+                        <th>Email</th>
+                        <th>Teléfono</th>
+                        <th>Usuario</th>
+                        <th>Acciones</th>
+                    </tr>
+                </thead>
 
-            <tbody>
-                <tr th:each="usuario : ${usuarios}">
-                    <td th:text="${usuario.nombre}"></td>
-                    <td th:text="${usuario.apellidoUno + ' ' + usuario.apellidoDos}"></td>
-                    <td th:text="${usuario.email}"></td>
-                    <td th:text="${usuario.telefono}"></td>
-                    <td th:text="${usuario.userName}"></td>
+                <tbody>
+                    <tr th:each="usuario : ${usuarios}">
+                        <td th:text="${usuario.nombre}"></td>
+                        <td th:text="${usuario.apellidoUno + ' ' + usuario.apellidoDos}"></td>
+                        <td th:text="${usuario.email}"></td>
+                        <td th:text="${usuario.telefono}"></td>
+                        <td th:text="${usuario.userName}"></td>
 
-                    <td>
-                        <div class="d-flex justify-content-center gap-2">
+                        <td>
+                            <div class="d-flex justify-content-center gap-2">
 
-                            <a th:href="@{/usuarios/editar/{id}(id=${usuario.idUsuario})}"
-                               class="btn btn-sm btn-primary">
-                                Editar
-                            </a>
+                                <a th:href="@{/usuarios/editar/{id}(id=${usuario.idUsuario})}"
+                                    class="btn btn-sm btn-primary">
+                                    Editar
+                                </a>
 
-                            <button class="btn btn-sm btn-danger"
+                                <button class="btn btn-sm btn-danger"
                                     th:onclick="'eliminarUsuario(' + ${usuario.idUsuario} + ')'">
-                                Eliminar
-                            </button>
+                                    Eliminar
+                                </button>
 
-                        </div>
-                    </td>
-                </tr>
-            </tbody>
+                            </div>
+                        </td>
+                    </tr>
+                </tbody>
 
-        </table>
+            </table>
+
+        </div>
 
     </div>
 
-</div>
+    <script src="/js/auth.js"></script>
 
-<script src="/js/auth.js"></script>
+    <script>
+        requireAdmin();
 
-<script>
-    requireAdmin();
+        function eliminarUsuario(id) {
 
-    function eliminarUsuario(id) {
+            if (!confirm("¿Seguro que deseas eliminar este usuario?")) return;
 
-        if (!confirm("¿Seguro que deseas eliminar este usuario?")) return;
+            authFetch(`/usuarios/${id}`, {
+                method: "DELETE"
+            })
+                .then(res => {
+                    if (!res) return;
 
-        authFetch(`/usuarios/${id}`, {
-            method: "DELETE"
-        })
-        .then(res => {
-            if (!res) return;
+                    if (!res.ok) throw new Error("Error al eliminar usuario");
 
-            if (!res.ok) throw new Error("Error al eliminar usuario");
-
-            alert("✅ Usuario eliminado");
-            location.reload();
-        })
-        .catch(err => alert(err.message));
-    }
-</script>
+                    alert("✅ Usuario eliminado");
+                    location.reload();
+                })
+                .catch(err => alert(err.message));
+        }
+    </script>
 
 </body>
+
 </html>

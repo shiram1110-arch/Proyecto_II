@@ -12,15 +12,15 @@ body {
     border: 2px solid rgba(255, 0, 0, 0.3);
     border-radius: 6px;
 
-    padding: 5px 14px; /* 🔥 más pequeño */
-    font-size: 14px;   /* 🔥 texto más compacto */
+    padding: 5px 14px;
+    font-size: 14px;
 
     font-weight: 600;
     letter-spacing: 0.5px;
 
     text-shadow: 0 0 2px rgba(255, 255, 255, 0.4);
 
-    box-shadow: 
+    box-shadow:
         0 0 5px rgba(255, 0, 0, 0.3),
         0 0 8px rgba(255, 0, 0, 0.15) inset;
 
@@ -28,7 +28,7 @@ body {
 }
 
 .btn-login-neon:hover {
-    box-shadow: 
+    box-shadow:
         0 0 8px rgba(255, 0, 0, 0.5),
         0 0 12px rgba(255, 0, 0, 0.25) inset;
 
@@ -161,7 +161,8 @@ body {
     transition: 0.3s;
 }
 
-.btn-volver, .btn-main {
+.btn-volver,
+.btn-main {
     font-weight: 500;
     letter-spacing: 0.5px;
 }
