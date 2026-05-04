@@ -10,5 +10,7 @@ public interface ReservaRepository extends JpaRepository<Reserva, Integer> {
 
     List<Reserva> findByUsuario_IdUsuario(int idUsuario);
     List<Reserva> findByUsuario_IdUsuarioAndClase_IdClase(Integer idUsuario,Integer idClase);
+
+    List<Reserva> findByEstadoIgnoreCase(String estado);
     
 }

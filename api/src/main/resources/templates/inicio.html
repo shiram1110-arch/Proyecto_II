@@ -14,19 +14,23 @@
     <header class="header shadow">
         <div class="container-fluid px-4 d-flex justify-content-between align-items-center">
 
-            <div>
+            <div class="d-flex align-items-center gap-3">
                 <img src="/img/logo.png" class="logo-header">
-                <a class="navbar-brand" href="#"><span id="nombreUsuario"></span></a>
+                <a class="navbar-brand m-0" href="#">
+                    <span id="nombreUsuario"></span>
+                </a>
             </div>
 
-            <!-- 🔥 CONTENEDOR DINÁMICO -->
+            <!-- 🔥 NAV DINÁMICO -->
             <div id="authButtons">
                 <a href="/login" class="btn btn-login-neon">Login</a>
             </div>
 
+
         </div>
     </header>
 
+    <!-- 🔥 CARRUSEL -->
     <div id="carouselExample" class="carousel slide">
 
         <div class="carousel-inner">
@@ -55,6 +59,7 @@
 
     </div>
 
+    <!-- 🔥 SECCIÓN -->
     <section class="container mt-5">
         <h2 class="text-center mb-4 titulo">Nuestras Clases</h2>
 
@@ -90,6 +95,7 @@
         </div>
     </section>
 
+    <!-- 🔥 FOOTER -->
     <footer class="footer mt-5 py-4 text-center">
         <div class="container">
             <img src="/img/logo.png" width="120" class="mb-2">
@@ -106,33 +112,44 @@
     <script>
         const container = document.getElementById("authButtons");
 
-        // 🔥 Usuario logueado
         if (isAuthenticated()) {
 
-            container.innerHTML = "";
-
-            // 🔥 ADMIN
+            // 👑 ADMIN
             if (isAdmin()) {
-
                 container.innerHTML = `
-            <a href="/horarioClases" class="btn btn-login-neon me-2">Ver Clases</a>
-            <a href="/adminDashboard" class="btn btn-login-neon me-2">Admin</a>
-            <button onclick="logout()" class="btn btn-login-neon">Cerrar sesión</button>
-        `;
-
+                <ul class="nav nav-tabs custom-nav">
+                    <li class="nav-item">
+                        <a class="nav-link active" href="/horarioClases">Clases</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="/adminDashboard">Admin</a>
+                    </li>
+                    <li class="nav-item">
+                        <button class="nav-link btn-logout" onclick="logout()">Salir</button>
+                    </li>
+                </ul>
+                `;
             }
+
             // 👤 USER
             else if (isUser()) {
-
                 container.innerHTML = `
-            <a href="/historial" class="btn btn-login-neon me-2">Historial</a>
-            <a href="/horarioClases" class="btn btn-login-neon me-2">Ver Clases</a>
-            <button onclick="logout()" class="btn btn-login-neon">Cerrar sesión</button>
-        `;
-
+                <ul class="nav nav-tabs custom-nav">
+                    <li class="nav-item">
+                        <a class="nav-link" href="/historial">Historial</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link active" href="/horarioClases">Clases</a>
+                    </li>
+                    <li class="nav-item">
+                        <button class="nav-link btn-logout" onclick="logout()">Salir</button>
+                    </li>
+                </ul>
+                `;
             }
         }
     </script>
+
     <script>getNombre()</script>
 
 </body>

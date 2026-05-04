@@ -68,5 +68,10 @@ public class ClaseController {
     public void delete(@PathVariable int id) {
         claseService.delete(id);
     }
+    
+    @GetMapping("/buscar/{nombre}")
+    public List<Clase> buscar(@PathVariable String nombre) {
+        return claseService.buscarPorNombre(nombre);
+    }
 
 }

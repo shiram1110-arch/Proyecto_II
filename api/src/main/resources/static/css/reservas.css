@@ -5,6 +5,36 @@ body {
     font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
 }
 
+.btn-login-neon {
+    background: transparent;
+    color: #ffffff !important;
+
+    border: 2px solid rgba(255, 0, 0, 0.3);
+    border-radius: 6px;
+
+    padding: 5px 14px; /* 🔥 más pequeño */
+    font-size: 14px;   /* 🔥 texto más compacto */
+
+    font-weight: 600;
+    letter-spacing: 0.5px;
+
+    text-shadow: 0 0 2px rgba(255, 255, 255, 0.4);
+
+    box-shadow: 
+        0 0 5px rgba(255, 0, 0, 0.3),
+        0 0 8px rgba(255, 0, 0, 0.15) inset;
+
+    transition: all 0.25s ease;
+}
+
+.btn-login-neon:hover {
+    box-shadow: 
+        0 0 8px rgba(255, 0, 0, 0.5),
+        0 0 12px rgba(255, 0, 0, 0.25) inset;
+
+    transform: scale(1.03);
+}
+
 .reserva-detalle {
     background-color: rgba(20, 20, 20, 0.95);
     border-radius: 20px;
@@ -61,8 +91,7 @@ body {
 
 .header {
     width: 100%;
-    background: radial-gradient(circle at center, #1a1a1a, #000000);
-    display: flex;
+    background: linear-gradient(90deg, #0f0f0f, #1a1a1a, #0f0f0f);
     align-items: center;
     justify-content: space-between;
     padding: 10px 40px;
@@ -70,13 +99,12 @@ body {
     top: 0;
     left: 0;
     z-index: 1000;
-    border-bottom: 1px solid #222;
+    border-bottom: 1px solid rgba(255, 0, 0, 0.3);
 }
 
 .logo-header {
-    width: 140px;
-    filter: drop-shadow(0 0 15px red);
-    transition: 0.3s;
+    width: 60px;
+    filter: drop-shadow(0 0 10px red);
 }
 
 .logo-header:hover {

@@ -64,7 +64,6 @@ public class ReservaController {
         Clase clase = claseService.getById(reserva.getClase().getIdClase())
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Clase no encontrada"));
 
-        
         reserva.setClase(clase);
 
         return reservaService.add(reserva);
@@ -80,5 +79,10 @@ public class ReservaController {
     @DeleteMapping("/{id}")
     public void delete(@PathVariable int id) {
         reservaService.delete(id);
+    }
+
+    @GetMapping("/estado/{estado}")
+    public List<Reserva> getByEstado(@PathVariable String estado) {
+        return reservaService.getByEstado(estado);
     }
 }

@@ -12,7 +12,7 @@ function setToken(token) {
 // 🚪 Logout global
 function logout() {
     localStorage.removeItem("token");
-    window.location.href = "/login";
+    window.location.href = "/inicio";
 }
 
 // 🔓 Decodificar JWT
@@ -57,7 +57,6 @@ function isUser() {
 // 🔒 Proteger páginas (requiere login)
 function requireAuth() {
     if (!isAuthenticated()) {
-        alert("Debes iniciar sesión");
         window.location.href = "/login";
     }
 }
@@ -94,7 +93,6 @@ function authFetch(url, options = {}) {
         }
 
         if (res.status === 403) {
-            alert("No tienes permisos");
             throw new Error("Forbidden");
         }
 
@@ -106,11 +104,30 @@ function getNombre() {
 
         const response = await authFetch("/api/usuarios/me");
 
-        if (response.ok) {
-            const usuario = await response.json();
+        if (!response.ok) return;
 
-            document.getElementById("nombreUsuario").textContent =
-                usuario.nombre + " " + usuario.apellidoUno;
+        const usuario = await response.json();
+
+        const nombreCompleto = `${usuario.nombre} ${usuario.apellidoUno}`;
+
+        const elemento = document.getElementById("nombreUsuario");
+
+        // 🔥 Detectar página actual
+        const ruta = window.location.pathname;
+
+        // 🏠 INICIO
+        if (ruta.includes("inicio")) {
+            elemento.textContent = `¡Hola, ${nombreCompleto}! 👋`;
+        }
+
+        // 📊 HISTORIAL
+        else if (ruta.includes("historial")) {
+            elemento.textContent = `Historial de ${nombreCompleto}`;
+        }
+
+        // 🔥 DEFAULT (por si acaso)
+        else {
+            elemento.textContent = nombreCompleto;
         }
     });
 }

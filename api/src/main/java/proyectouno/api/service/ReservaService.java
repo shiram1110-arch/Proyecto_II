@@ -98,4 +98,8 @@ public class ReservaService {
         }).toList();
     }
 
+    public List<Reserva> getByEstado(String estado){
+    return reservaRepository.findByEstadoIgnoreCase(estado);
+}
+
 }

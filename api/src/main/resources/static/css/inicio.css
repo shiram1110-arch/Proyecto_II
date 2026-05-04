@@ -3,6 +3,7 @@ body {
     color: white;
 }
 
+/* HEADER */
 .header {
     background: radial-gradient(circle at center, #1a1a1a, #000000);
     padding: 15px 0;
@@ -11,18 +12,14 @@ body {
     z-index: 1000;
 }
 
-.navbar {
-    background: linear-gradient(90deg, #0f0f0f, #1a1a1a, #0f0f0f);
-    border-bottom: 1px solid rgba(255, 0, 0, 0.3);
-    box-shadow: 0 0 8px rgba(255, 0, 0, 0.4);
-}
-.navbar-brand span {
-    color: white;
-    font-weight: bold;
-    text-shadow: 0 0 8px red;
-}
 #nombreUsuario {
-    font-size: 30px;
+    font-size: 22px;
+    font-weight: 500;
+
+    color: #d0d0d0;
+
+    text-shadow:
+        0 1px 2px rgba(255, 255, 255, 0.4);
 }
 
 .btn-login-neon {
@@ -44,6 +41,7 @@ body {
     transform: scale(1.05);
 }
 
+/* LOGO */
 .logo-header {
     width: 120px;
     filter: drop-shadow(0 0 10px red);
@@ -55,6 +53,73 @@ body {
     filter: drop-shadow(0 0 20px red);
 }
 
+/* 🔥 NAV ESTILO IMAGEN */
+.custom-nav {
+    border-bottom: none;
+}
+
+/* 🔥 NAV GENERAL */
+.custom-nav .nav-link {
+    color: #ffffff !important;
+    background: transparent !important;
+    border: none !important;
+    font-size: 18px;
+    font-weight: 600;
+    letter-spacing: 0.5px;
+    text-shadow: 0 0 6px rgba(255, 255, 255, 0.7);
+    transition: 0.3s;
+
+}
+
+/* 🔥 TODOS IGUALES (incluye el active) */
+.custom-nav .nav-link.active {
+    color: #ffffff !important;
+    background: transparent !important;
+    border: none !important;
+    font-size: 18px;
+    font-weight: 600;
+    text-shadow: 0 0 6px rgba(255, 255, 255, 0.7);
+
+}
+
+/* 🔥 HOVER (ligeramente más brillo) */
+.custom-nav .nav-link:hover {
+    text-shadow: 0 0 10px rgba(255, 255, 255, 1);
+    transform: scale(1.05);
+    color: #ff4d4d !important;
+}
+
+/* 🔥 OPCIONAL: línea inferior suave para todos */
+.custom-nav .nav-link::after {
+    content: "";
+    display: block;
+    height: 2px;
+    width: 0%;
+    background: red;
+    transition: 0.3s;
+    margin-top: 4px;
+}
+
+.custom-nav .nav-link:hover::after {
+    width: 100%;
+}
+
+/* 🔥 SALIR */
+.btn-logout {
+    color: #ffffff !important;
+    background: transparent !important;
+    border: none !important;
+    font-size: 18px;
+    font-weight: 600;
+    text-shadow: 0 0 6px rgba(255, 255, 255, 0.7);
+}
+
+.btn-logout:hover {
+    color: #ff4d4d !important;
+    text-shadow: 0 0 10px red;
+}
+
+/* CAROUSEL */
 .carousel-item img {
     height: 100%;
     width: 100%;
@@ -62,10 +127,12 @@ body {
     object-position: center;
 }
 
+/* TITULOS */
 .titulo {
     text-shadow: 0 0 10px red;
 }
 
+/* CARDS */
 .card-custom {
     background-color: #111;
     color: white;
@@ -78,6 +145,7 @@ body {
     border-color: red;
 }
 
+/* FOOTER */
 .footer {
     background: radial-gradient(circle at center, #1a1a1a, #000000);
     border-top: 1px solid #222;

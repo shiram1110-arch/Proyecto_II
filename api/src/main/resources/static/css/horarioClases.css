@@ -2,32 +2,77 @@ body {
     background: radial-gradient(circle at center, #1a1a1a, #000000);
     color: white;
     padding-top: 80px;
+    font-family: 'Segoe UI', sans-serif;
 }
 
-/* HEADER */
+/* HEADER / NAV */
 .header {
     width: 100%;
-    background: radial-gradient(circle at center, #1a1a1a, #000000);
-    border-bottom: 1px solid #333;
-    box-shadow: 0 0 15px rgba(255,0,0,0.2);
+    background: linear-gradient(90deg, #0f0f0f, #1a1a1a, #0f0f0f);
+    border-bottom: 1px solid rgba(255, 0, 0, 0.3);
+    box-shadow: 0 0 8px rgba(255, 0, 0, 0.4);
+    
     display: flex;
     align-items: center;
     justify-content: space-between;
+
     padding: 10px 40px;
+
     position: fixed;
     top: 0;
     left: 0;
     z-index: 1000;
 }
 
-.titulo {
-    color: white;
-    text-shadow: 0 0 12px red;
+/* BOTÓN (MISMO QUE HISTORIAL) */
+.btn-login-neon {
+    background: transparent;
+    color: #ffffff !important;
+
+    border: 2px solid rgba(255, 0, 0, 0.3);
+    border-radius: 6px;
+
+    padding: 5px 14px; /* 🔥 más pequeño */
+    font-size: 14px;   /* 🔥 texto más compacto */
+
+    font-weight: 600;
+    letter-spacing: 0.5px;
+
+    text-shadow: 0 0 2px rgba(255, 255, 255, 0.4);
+
+    box-shadow: 
+        0 0 5px rgba(255, 0, 0, 0.3),
+        0 0 8px rgba(255, 0, 0, 0.15) inset;
+
+    transition: all 0.25s ease;
 }
 
+.btn-login-neon:hover {
+    box-shadow: 
+        0 0 8px rgba(255, 0, 0, 0.5),
+        0 0 12px rgba(255, 0, 0, 0.25) inset;
+
+    transform: scale(1.03);
+}
+/* TÍTULO */
+.titulo {
+    color: white;
+    text-shadow: 0 0 10px red;
+    font-weight: bold;
+}
+
+/* LOGO */
 .logo {
     width: 60px;
     filter: drop-shadow(0 0 10px red);
+}
+
+/* SUBTÍTULO */
+.subtitulo-dia {
+    color: #ccc;
+    font-size: 14px;
+    letter-spacing: 1px;
+    text-align: center;
 }
 
 /* DÍAS */
@@ -70,11 +115,14 @@ body {
     display: flex;
     align-items: center;
     justify-content: space-between;
+
     background-color: white;
     color: black;
+
     padding: 15px 20px;
     border-radius: 12px;
     margin-bottom: 15px;
+
     transition: 0.3s;
 }
 
@@ -104,13 +152,6 @@ body {
     padding: 6px 12px;
     border-radius: 8px;
     transition: 0.3s;
-}
-
-/* TEXTO */
-.subtitulo-dia {
-    color: #ccc;
-    font-size: 14px;
-    letter-spacing: 1px;
 }
 
 /* FOOTER */

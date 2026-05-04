@@ -9,5 +9,6 @@ import java.util.List;
 public interface ClaseRepository extends JpaRepository<Clase, Integer>{
 
     List<Clase> findByDiaSemanaOrderByHorarioAsc(String diaSemana);
+    List<Clase> findByNombreContainingIgnoreCase(String nombre);
     
 }

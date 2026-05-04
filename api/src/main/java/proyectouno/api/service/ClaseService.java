@@ -50,4 +50,7 @@ public class ClaseService {
         return claseRepository.findByDiaSemanaOrderByHorarioAsc(diaSemana);
     }
 
+    public List<Clase> buscarPorNombre(String nombre) {
+        return claseRepository.findByNombreContainingIgnoreCase(nombre);
+    }
 }
