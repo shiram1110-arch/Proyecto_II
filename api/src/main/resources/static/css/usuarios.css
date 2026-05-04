@@ -10,14 +10,12 @@ body {
     box-shadow: 0 0 15px rgba(255,0,0,0.2);
 }
 
-
 .registro-card {
     background: rgba(20, 20, 20, 0.95);
     border: 1px solid #333;
     border-radius: 15px;
     box-shadow: 0 0 25px rgba(255,0,0,0.2);
 }
-
 
 .titulo {
     color: white;
@@ -28,6 +26,9 @@ body {
     color: #bbb;
 }
 
+/* =========================
+   🔥 BOTONES
+========================= */
 
 .btn-main {
     background: transparent;
@@ -36,8 +37,8 @@ body {
     border: 2px solid rgba(255, 0, 0, 0.3);
     border-radius: 6px;
 
-    padding: 5px 14px; /* 🔥 más pequeño */
-    font-size: 14px;   /* 🔥 texto más compacto */
+    padding: 5px 14px;
+    font-size: 14px;
 
     font-weight: 600;
     letter-spacing: 0.5px;
@@ -66,8 +67,8 @@ body {
     border: 2px solid rgba(255, 0, 0, 0.3);
     border-radius: 6px;
 
-    padding: 5px 14px; /* 🔥 más pequeño */
-    font-size: 14px;   /* 🔥 texto más compacto */
+    padding: 5px 14px;
+    font-size: 14px;
 
     font-weight: 600;
     letter-spacing: 0.5px;
@@ -89,37 +90,80 @@ body {
     transform: scale(1.03);
 }
 
+/* =========================
+   🖼️ LOGO
+========================= */
 
 .logo {
     width: 60px;
     filter: drop-shadow(0 0 10px red);
 }
 
+/* =========================
+   📊 TABLA
+========================= */
 
 .table {
     border-radius: 10px;
     overflow: hidden;
 }
 
+/* =========================
+   🔍 BUSCADOR
+========================= */
+
 #buscador {
     background: rgba(40, 40, 40, 0.8);
     border: 1px solid #333;
     color: white;
-    border-radius: 30px; /* más redondeado */
-    padding: 8px 15px; /* más compacto */
+    border-radius: 30px;
+    padding: 8px 15px;
     font-size: 14px;
     transition: 0.3s;
 }
 
-
 #buscador::placeholder {
     color: #aaa;
 }
-
 
 #buscador:focus {
     outline: none;
     border: 1px solid red;
     box-shadow: 0 0 10px rgba(255, 0, 0, 0.5);
     background: rgba(40, 40, 40, 1);
+}
+
+/* =========================
+   🔥 ESTADOS DE RESERVA
+========================= */
+
+.estado {
+    font-weight: bold;
+    padding: 5px 10px;
+    border-radius: 8px;
+    display: inline-block;
+}
+
+/* 🟢 ACTIVA */
+.estado.activa {
+    color: #39ff88;
+    text-shadow:
+        0 0 5px rgba(57,255,136,0.5),
+        0 0 10px rgba(57,255,136,0.3);
+}
+
+/* 🟡 CANCELADA */
+.estado.cancelada {
+    color: #ffc107;
+    text-shadow:
+        0 0 5px rgba(255,193,7,0.5),
+        0 0 10px rgba(255,193,7,0.3);
+}
+
+/* 🔵 FINALIZADA */
+.estado.finalizada {
+    color: #00cfff;
+    text-shadow:
+        0 0 5px rgba(0,207,255,0.5),
+        0 0 10px rgba(0,207,255,0.3);
 }

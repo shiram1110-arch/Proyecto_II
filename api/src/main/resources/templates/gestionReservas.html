@@ -33,7 +33,7 @@
 
     <div class="text-center mb-4">
         <h2 class="titulo">Lista de Reservas</h2>
-        <p class="subtitulo">Visualiza y elimina reservas del sistema</p>
+        <p class="subtitulo">Visualiza, cancela o elimina reservas</p>
     </div>
 
     <!-- 🔥 FILTROS -->
@@ -57,18 +57,36 @@
                 </tr>
             </thead>
 
-            <!-- 🔥 CARGA INICIAL (Thymeleaf) -->
+            <!-- 🔥 CARGA INICIAL -->
             <tbody id="tbodyReservas">
                 <tr th:each="reserva : ${reservas}">
                     <td th:text="${reserva.usuario.nombre}"></td>
                     <td th:text="${reserva.clase.nombre}"></td>
                     <td th:text="${#temporals.format(reserva.fechaReserva, 'yyyy-MM-dd')}"></td>
-                    <td th:text="${reserva.estado}"></td>
+
+                    <!-- COLOR DE ESTADO -->
                     <td>
+                        <span th:text="${reserva.estado}"
+                              th:classappend="${reserva.estado == 'ACTIVA'} ? 'text-success' :
+                                              (${reserva.estado == 'CANCELADA'} ? 'text-warning' : 'text-info')">
+                        </span>
+                    </td>
+
+                    <td>
+
+                        <!-- 🔥 CANCELAR -->
+                        <button class="btn btn-sm btn-warning"
+                            th:onclick="'cancelarReserva(' + ${reserva.idReserva} + ')'"
+                            th:disabled="${reserva.estado == 'CANCELADA'}">
+                            Cancelar
+                        </button>
+
+                        <!-- ❌ ELIMINAR -->
                         <button class="btn btn-sm btn-danger"
                             th:onclick="'eliminarReserva(' + ${reserva.idReserva} + ')'">
                             Eliminar
                         </button>
+
                     </td>
                 </tr>
             </tbody>
@@ -84,7 +102,7 @@
 <script>
 requireAdmin();
 
-// 🗑️ ELIMINAR
+// ❌ ELIMINAR
 function eliminarReserva(id) {
 
     if (!confirm("¿Seguro que deseas eliminar esta reserva?")) return;
@@ -95,7 +113,27 @@ function eliminarReserva(id) {
     .then(res => {
         if (!res.ok) throw new Error("Error al eliminar reserva");
 
-        alert("✅ Reserva eliminada");
+        alert("🗑️ Reserva eliminada");
+        location.reload();
+    })
+    .catch(err => {
+        console.error(err);
+        alert(err.message);
+    });
+}
+
+// ⚠️ CANCELAR
+function cancelarReserva(id) {
+
+    if (!confirm("¿Seguro que deseas cancelar esta reserva?")) return;
+
+    authFetch(`/api/reservas/cancelar/${id}`, {
+        method: "PUT"
+    })
+    .then(res => {
+        if (!res.ok) throw new Error("Error al cancelar");
+
+        alert("⚠️ Reserva cancelada");
         location.reload();
     })
     .catch(err => {
@@ -135,13 +173,24 @@ function filtrar(estado, btn) {
 
             data.forEach(r => {
 
+                let color = r.estado === "ACTIVA" ? "text-success" :
+                            r.estado === "CANCELADA" ? "text-warning" :
+                            "text-info";
+
+                let disabled = r.estado === "CANCELADA" ? "disabled" : "";
+
                 tbody.innerHTML += `
                 <tr>
                     <td>${r.nombreUsuario}</td>
                     <td>${r.nombreClase}</td>
                     <td>${r.fechaReserva}</td>
-                    <td>${r.estado}</td>
+                    <td class="${color}">${r.estado}</td>
                     <td>
+                        <button class="btn btn-sm btn-warning"
+                            onclick="cancelarReserva(${r.idReserva})" ${disabled}>
+                            Cancelar
+                        </button>
+
                         <button class="btn btn-sm btn-danger"
                             onclick="eliminarReserva(${r.idReserva})">
                             Eliminar

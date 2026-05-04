@@ -9,11 +9,13 @@ import jakarta.persistence.*;
 import lombok.*;
 
 @Entity
-@Table(name="clases")
+@Table(name = "clases", uniqueConstraints = {
+        @UniqueConstraint(columnNames = { "dia_semana", "hora" })
+})
 @Getter
 @Setter
-@ToString(exclude = {"reservas"})
-@EqualsAndHashCode(exclude = {"reservas"})
+@ToString(exclude = { "reservas" })
+@EqualsAndHashCode(exclude = { "reservas" })
 
 public class Clase {
     @Id
@@ -31,8 +33,8 @@ public class Clase {
     private LocalTime horario;
     @Column(name = "capacidad", nullable = false)
     private Integer capacidad;
-    
-    @OneToMany(mappedBy="clase")
+
+    @OneToMany(mappedBy = "clase")
     @JsonIgnore
     public List<Reserva> reservas;
 }

@@ -41,13 +41,18 @@
                         <p th:text="${clase.diaSemana}"></p>
                         <p th:text="${clase.horario}"></p>
 
-                        <p th:text="${clase.capacidad + ' cupos disponibles'}"></p>
+                        <!-- 🔥 CAMBIO AQUÍ -->
+                        <p th:class="${clase.capacidad == 0} ? 'estado lleno' : 'estado disponible'">
+                            <span th:text="${clase.capacidad == 0 ? 'Clase llena' : clase.capacidad + ' cupos disponibles'}"></span>
+                        </p>
 
                         <form id="formReserva">
 
                             <input type="hidden" name="claseId" th:value="${clase.idClase}">
 
-                            <button type="submit" class="btn btn-main w-100 mt-3" th:disabled="${clase.capacidad == 0}">
+                            <button type="submit"
+                                class="btn btn-main w-100 mt-3"
+                                th:disabled="${clase.capacidad == 0}">
                                 Reservar
                             </button>
 
@@ -95,13 +100,14 @@
                 body: JSON.stringify(data)
             })
                 .then(res => {
-                    if (!res) return; // por si hubo logout automático
+                    if (!res) return;
 
                     if (!res.ok) {
                         return res.json().then(error => {
                             throw new Error(error.message);
                         });
                     }
+
                     alert("✅ Reserva realizada");
                     window.location.href = "/horarioClases";
                 })
@@ -113,5 +119,4 @@
     </script>
 
 </body>
-
 </html>

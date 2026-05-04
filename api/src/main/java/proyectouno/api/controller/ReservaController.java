@@ -87,4 +87,9 @@ public class ReservaController {
         return reservaService.getByEstadoDTO(estado);
     }
 
+    @PutMapping("/cancelar/{id}")
+    public Reserva cancelar(@PathVariable int id) {
+        return reservaService.cancelarReserva(id);
+    }
+
 }

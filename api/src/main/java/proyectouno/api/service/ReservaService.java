@@ -9,6 +9,7 @@ import org.springframework.web.server.ResponseStatusException;
 
 import lombok.AllArgsConstructor;
 import proyectouno.api.dto.ReservaDTO;
+import proyectouno.api.entity.Clase;
 import proyectouno.api.entity.Reserva;
 import proyectouno.api.repository.ReservaRepository;
 
@@ -17,12 +18,29 @@ import proyectouno.api.repository.ReservaRepository;
 public class ReservaService {
 
     private ReservaRepository reservaRepository;
+    private ClaseService claseService;
 
     // 🔥 CREATE
     public Reserva add(Reserva reserva) {
 
         validarDatosReserva(reserva);
         validarReservaDuplicada(reserva);
+
+        Clase clase = reserva.getClase();
+
+        // 🔥 VALIDAR CUPOS
+        if (clase.getCapacidad() <= 0) {
+            throw new ResponseStatusException(
+                    HttpStatus.BAD_REQUEST,
+                    "No hay cupos disponibles");
+        }
+
+        // 🔥 RESTAR CUPO
+        clase.setCapacidad(clase.getCapacidad() - 1);
+
+        // 🔥 GUARDAR CAMBIO EN CLASE
+        claseService.save(clase);
+
         completarDatosPorDefecto(reserva);
 
         return reservaRepository.save(reserva);
@@ -40,6 +58,15 @@ public class ReservaService {
 
     // ❌ DELETE
     public void delete(int id) {
+
+        Reserva reserva = obtenerReservaPorId(id);
+
+        Clase clase = reserva.getClase();
+
+        // 🔥 DEVOLVER CUPO
+        clase.setCapacidad(clase.getCapacidad() + 1);
+        claseService.save(clase);
+
         reservaRepository.deleteById(id);
     }
 
@@ -133,5 +160,26 @@ public class ReservaService {
                 .stream()
                 .map(this::convertirADTO)
                 .toList();
+    }
+
+    public Reserva cancelarReserva(int id) {
+
+        Reserva reserva = obtenerReservaPorId(id);
+
+        if (reserva.getEstado().equalsIgnoreCase("CANCELADA")) {
+            throw new ResponseStatusException(
+                    HttpStatus.BAD_REQUEST,
+                    "La reserva ya está cancelada");
+        }
+
+        // 🔥 cambiar estado
+        reserva.setEstado("CANCELADA");
+
+        // 🔥 devolver cupo
+        Clase clase = reserva.getClase();
+        clase.setCapacidad(clase.getCapacidad() + 1);
+        claseService.save(clase);
+
+        return reservaRepository.save(reserva);
     }
 }

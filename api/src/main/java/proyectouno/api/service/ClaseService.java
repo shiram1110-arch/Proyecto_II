@@ -16,6 +16,15 @@ public class ClaseService {
     private ClaseRepository claseRepository;
 
     public Clase add(Clase clase) {
+        boolean existe = claseRepository.existsByDiaSemanaAndHorario(
+                clase.getDiaSemana(),
+                clase.getHorario());
+
+        if (existe) {
+            throw new ResponseStatusException(
+                    HttpStatus.BAD_REQUEST,
+                    "Ya existe una clase con ese día y hora");
+        }
         return claseRepository.save(clase);
     }
 
@@ -52,5 +61,9 @@ public class ClaseService {
 
     public List<Clase> buscarPorNombre(String nombre) {
         return claseRepository.findByNombreContainingIgnoreCase(nombre);
+    }
+
+    public Clase save(Clase clase) {
+        return claseRepository.save(clase);
     }
 }
