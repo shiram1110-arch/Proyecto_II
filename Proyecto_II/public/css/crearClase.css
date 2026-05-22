@@ -1,0 +1,78 @@
+body {
+    background: radial-gradient(circle at center, #1a1a1a, #000000);
+    color: rgb(22, 21, 21);
+    margin: 0;
+}
+
+
+.contenedor {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+}
+
+.registro-card {
+    width: 400px;
+    background: rgba(20, 20, 20, 0.95);
+    border: 1px solid #333;
+    border-radius: 15px;
+    box-shadow: 0 0 30px rgba(255, 0, 0, 0.3);
+    transition: 0.3s;
+}
+
+.registro-card:hover {
+    transform: scale(1.02);
+}
+
+
+.titulo {
+    color: white;
+    text-shadow: 0 0 12px red;
+}
+
+.subtitulo {
+    color: #bbb;
+    font-size: 14px;
+}
+
+
+.form-control {
+    background-color: #2b2b2b;
+    border: none;
+    color: white;
+    padding: 10px;
+}
+
+.form-control::placeholder {
+    color: #aaa;
+}
+
+.form-control:focus {
+    background-color: #2b2b2b;
+    color: white;
+    box-shadow: 0 0 10px red;
+}
+
+
+.btn-main {
+    background: linear-gradient(45deg, #b30000, #ff1a1a);
+    border: none;
+    color: white;
+    font-weight: bold;
+    transition: 0.3s;
+}
+
+.btn-main:hover {
+    transform: scale(1.05);
+    box-shadow: 0 0 15px red;
+}
+
+
+.logo {
+    width: 70px;
+    height: auto;
+    display: block;
+    margin: 0 auto;
+    filter: drop-shadow(0 0 10px red);
+}
