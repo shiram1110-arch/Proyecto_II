@@ -1,0 +1,12 @@
+POST http://localhost:8000/api/login 
+Content-Type: application/json 
+ 
+{ 
+  "userName": "admin", 
+  "password": "admin123" 
+} 
+ 
+### 
+GET http://localhost:8000/api/clases
+Authorization: Bearer 1|b9OTmdWFRDgqZBEz1kfvWFFeGmsXqNHO0irSstTj72ee8aa8
+Accept: application/json 

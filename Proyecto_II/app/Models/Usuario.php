@@ -2,10 +2,14 @@
 
 namespace App\Models;
 
-use Illuminate\Database\Eloquent\Model;
+use Illuminate\Foundation\Auth\User as Authenticatable;
+use Illuminate\Notifications\Notifiable;
+use Laravel\Sanctum\HasApiTokens;
 
-class Usuario extends Model
+class Usuario extends Authenticatable
 {
+    use HasApiTokens, Notifiable;
+
     protected $table = 'usuarios';
 
     protected $primaryKey = 'idUsuario';
@@ -24,7 +28,12 @@ class Usuario extends Model
     ];
 
     protected $hidden = [
-        'password'
+        'password',
+        'remember_token'
+    ];
+
+    protected $casts = [
+        'password' => 'hashed'
     ];
 
     public function rol()

@@ -4,80 +4,77 @@ namespace App\Http\Controllers;
 
 use App\Models\Clase;
 use Illuminate\Http\Request;
+use Illuminate\Http\JsonResponse;
 
 class ClaseController extends Controller
 {
-    // Obtener todas las clases
-    public function index()
+    public function index(): JsonResponse
     {
-        return Clase::all();
+        $clases = Clase::with('reservas')->get();
+
+        return response()->json([
+            'success' => true,
+            'data' => $clases,
+            'message' => 'Listado de clases'
+        ]);
     }
 
-    // Obtener clase por ID
-    public function show($id)
+    public function store(Request $request): JsonResponse
     {
-        $clase = Clase::find($id);
+        $validated = $request->validate([
+            'nombre'      => 'required|string|max:100',
+            'descripcion' => 'nullable|string|max:255',
+            'diaSemana'   => 'required|string|max:20',
+            'horario'     => 'required|date_format:H:i',
+            'capacidad'   => 'required|integer|min:1'
+        ]);
 
-        if (!$clase) {
-            return response()->json([
-                'mensaje' => 'Clase no encontrada'
-            ], 404);
-        }
+        $clase = Clase::create($validated);
 
-        return $clase;
+        return response()->json([
+            'success' => true,
+            'data' => $clase,
+            'message' => 'Clase creada correctamente'
+        ], 201);
     }
 
-    // Crear clase
-    public function store(Request $request)
+    public function show(Clase $clase): JsonResponse
     {
-        $clase = Clase::create($request->all());
+        $clase->load('reservas');
 
-        return response()->json($clase, 201);
+        return response()->json([
+            'success' => true,
+            'data' => $clase,
+            'message' => 'Clase obtenida correctamente'
+        ]);
     }
 
-    // Actualizar clase
-    public function update(Request $request, $id)
+    public function update(Request $request, Clase $clase): JsonResponse
     {
-        $clase = Clase::find($id);
+        $validated = $request->validate([
+            'nombre'      => 'sometimes|required|string|max:100',
+            'descripcion' => 'sometimes|nullable|string|max:255',
+            'diaSemana'   => 'sometimes|required|string|max:20',
+            'horario'     => 'sometimes|required|date_format:H:i',
+            'capacidad'   => 'sometimes|required|integer|min:1'
+        ]);
 
-        if (!$clase) {
-            return response()->json([
-                'mensaje' => 'Clase no encontrada'
-            ], 404);
-        }
+        $clase->update($validated);
 
-        $clase->update($request->all());
-
-        return response()->json($clase, 200);
+        return response()->json([
+            'success' => true,
+            'data' => $clase,
+            'message' => 'Clase actualizada correctamente'
+        ]);
     }
 
-    // Eliminar clase
-    public function destroy($id)
+    public function destroy(Clase $clase): JsonResponse
     {
-        $clase = Clase::find($id);
-
-        if (!$clase) {
-            return response()->json([
-                'mensaje' => 'Clase no encontrada'
-            ], 404);
-        }
-
         $clase->delete();
 
         return response()->json([
-            'mensaje' => 'Clase eliminada'
-        ], 200);
-    }
-
-    // Buscar clases por día
-    public function getClasesPorDia($diaSemana)
-    {
-        return Clase::where('diaSemana', $diaSemana)->get();
-    }
-
-    // Buscar por nombre
-    public function buscar($nombre)
-    {
-        return Clase::where('nombre', 'LIKE', "%$nombre%")->get();
+            'success' => true,
+            'message' => 'Clase eliminada correctamente'
+        ]);
     }
 }

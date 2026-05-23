@@ -3,118 +3,76 @@
 namespace App\Http\Controllers;
 
 use App\Models\Reserva;
-use App\Models\Usuario;
-use App\Models\Clase;
 use Illuminate\Http\Request;
+use Illuminate\Http\JsonResponse;
 
 class ReservaController extends Controller
 {
-    // Obtener todas las reservas
-    public function index()
+    public function index(): JsonResponse
     {
-        return Reserva::with(['usuario', 'clase'])->get();
+        $reservas = Reserva::with('usuario', 'clase')->get();
+
+        return response()->json([
+            'success' => true,
+            'data' => $reservas,
+            'message' => 'Listado de reservas'
+        ]);
     }
 
-    // Obtener reserva por ID
-    public function show($id)
+    public function store(Request $request): JsonResponse
     {
-        $reserva = Reserva::with(['usuario', 'clase'])->find($id);
-
-        if (!$reserva) {
-            return response()->json([
-                'mensaje' => 'Reserva no encontrada'
-            ], 404);
-        }
-
-        return $reserva;
-    }
-
-    // Crear reserva
-    public function store(Request $request)
-    {
-        $usuario = Usuario::find($request->idUsuario);
-
-        if (!$usuario) {
-            return response()->json([
-                'mensaje' => 'Usuario no encontrado'
-            ], 404);
-        }
-
-        $clase = Clase::find($request->idClase);
-
-        if (!$clase) {
-            return response()->json([
-                'mensaje' => 'Clase no encontrada'
-            ], 404);
-        }
-
-        $reserva = Reserva::create([
-            'idUsuario' => $usuario->idUsuario,
-            'idClase' => $clase->idClase,
-            'fechaReserva' => $request->fechaReserva,
-            'estado' => $request->estado
+        $validated = $request->validate([
+            'idUsuario'     => 'required|integer|exists:usuarios,idUsuario',
+            'idClase'       => 'required|integer|exists:clases,idClase',
+            'fechaReserva'  => 'required|date',
+            'estado'        => 'required|string|max:50'
         ]);
 
-        return response()->json($reserva, 201);
+        $reserva = Reserva::create($validated);
+
+        return response()->json([
+            'success' => true,
+            'data' => $reserva,
+            'message' => 'Reserva creada correctamente'
+        ], 201);
     }
 
-    // Actualizar reserva
-    public function update(Request $request, $id)
+    public function show(Reserva $reserva): JsonResponse
     {
-        $reserva = Reserva::find($id);
+        $reserva->load('usuario', 'clase');
 
-        if (!$reserva) {
-            return response()->json([
-                'mensaje' => 'Reserva no encontrada'
-            ], 404);
-        }
-
-        $reserva->update($request->all());
-
-        return response()->json($reserva, 200);
+        return response()->json([
+            'success' => true,
+            'data' => $reserva,
+            'message' => 'Reserva obtenida correctamente'
+        ]);
     }
 
-    // Eliminar reserva
-    public function destroy($id)
+    public function update(Request $request, Reserva $reserva): JsonResponse
     {
-        $reserva = Reserva::find($id);
+        $validated = $request->validate([
+            'idUsuario'     => 'sometimes|required|integer|exists:usuarios,idUsuario',
+            'idClase'       => 'sometimes|required|integer|exists:clases,idClase',
+            'fechaReserva'  => 'sometimes|required|date',
+            'estado'        => 'sometimes|required|string|max:50'
+        ]);
 
-        if (!$reserva) {
-            return response()->json([
-                'mensaje' => 'Reserva no encontrada'
-            ], 404);
-        }
+        $reserva->update($validated);
 
+        return response()->json([
+            'success' => true,
+            'data' => $reserva,
+            'message' => 'Reserva actualizada correctamente'
+        ]);
+    }
+
+    public function destroy(Reserva $reserva): JsonResponse
+    {
         $reserva->delete();
 
         return response()->json([
-            'mensaje' => 'Reserva eliminada'
-        ], 200);
-    }
-
-    // Buscar reservas por estado
-    public function getByEstado($estado)
-    {
-        return Reserva::with(['usuario', 'clase'])
-            ->where('estado', $estado)
-            ->get();
-    }
-
-    // Cancelar reserva
-    public function cancelar($id)
-    {
-        $reserva = Reserva::find($id);
-
-        if (!$reserva) {
-            return response()->json([
-                'mensaje' => 'Reserva no encontrada'
-            ], 404);
-        }
-
-        $reserva->estado = 'Cancelada';
-
-        $reserva->save();
-
-        return response()->json($reserva, 200);
+            'success' => true,
+            'message' => 'Reserva eliminada correctamente'
+        ]);
     }
 }
