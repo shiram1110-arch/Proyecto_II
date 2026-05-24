@@ -49,9 +49,8 @@
 
         <div class="d-flex gap-2">
 
-            <a href="{{ url('/adminDashboard') }}"
+            <a href="{{ url('/admin/adminDashboard') }}"
                class="btn btn-login-neon">
-
                 Volver
             </a>
 

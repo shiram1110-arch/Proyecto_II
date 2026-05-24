@@ -4,90 +4,120 @@ namespace App\Http\Controllers;
 
 use App\Models\Usuario;
 use Illuminate\Http\Request;
-use Illuminate\Http\JsonResponse;
-use Illuminate\Support\Facades\Hash;
 
 class UsuarioController extends Controller
 {
-    public function index(): JsonResponse
+    public function index()
     {
-        $usuarios = Usuario::with('rol', 'reservas')->get();
-
         return response()->json([
             'success' => true,
-            'data' => $usuarios,
-            'message' => 'Listado de usuarios'
+            'data' => Usuario::with('rol')->get()
         ]);
     }
 
-    public function store(Request $request): JsonResponse
+    public function store(Request $request)
     {
-        $validated = $request->validate([
-            'nombre'      => 'required|string|max:100',
-            'apellidoUno' => 'required|string|max:100',
-            'apellidoDos' => 'nullable|string|max:100',
-            'email'       => 'required|email|max:150|unique:usuarios,email',
-            'telefono'    => 'nullable|string|max:20',
-            'userName'    => 'required|string|max:50|unique:usuarios,userName',
-            'password'    => 'required|string|min:6',
-            'idRol'       => 'required|integer|exists:roles,idRol'
+        $request->validate([
+            'nombre' => 'required|string|max:255',
+            'apellidoUno' => 'required|string|max:255',
+            'apellidoDos' => 'required|string|max:255',
+            'email' => 'required|email|unique:usuarios,email',
+            'telefono' => 'required|string|max:20',
+            'userName' => 'required|string|unique:usuarios,userName',
+            'password' => 'required|string|min:4'
         ]);
 
-        $validated['password'] = Hash::make($validated['password']);
+        $authUser = $request->user();
 
-        $usuario = Usuario::create($validated);
+        $idRol = 1;
+
+        if ($authUser && $authUser->rol && $authUser->rol->nombre === "ROLE_ADMIN") {
+            $idRol = 2;
+        }
+
+        $usuario = Usuario::create([
+            'nombre' => $request->nombre,
+            'apellidoUno' => $request->apellidoUno,
+            'apellidoDos' => $request->apellidoDos,
+            'email' => $request->email,
+            'telefono' => $request->telefono,
+            'userName' => $request->userName,
+            'password' => bcrypt($request->password),
+            'idRol' => $idRol
+            
+        ]);
 
         return response()->json([
             'success' => true,
-            'data' => $usuario,
-            'message' => 'Usuario creado correctamente'
+            'message' => 'Usuario creado correctamente',
+            'data' => $usuario->load('rol')
         ], 201);
     }
 
-    public function show(Usuario $usuario): JsonResponse
+    public function show(string $id)
     {
-        $usuario->load('rol', 'reservas');
-
         return response()->json([
             'success' => true,
-            'data' => $usuario,
-            'message' => 'Usuario obtenido correctamente'
+            'data' => Usuario::with('rol')->findOrFail($id)
         ]);
     }
 
-    public function update(Request $request, Usuario $usuario): JsonResponse
+    public function update(Request $request, string $id)
     {
-        $validated = $request->validate([
-            'nombre'      => 'sometimes|required|string|max:100',
-            'apellidoUno' => 'sometimes|required|string|max:100',
-            'apellidoDos' => 'sometimes|nullable|string|max:100',
-            'email'       => 'sometimes|required|email|max:150|unique:usuarios,email,' . $usuario->idUsuario . ',idUsuario',
-            'telefono'    => 'sometimes|nullable|string|max:20',
-            'userName'    => 'sometimes|required|string|max:50|unique:usuarios,userName,' . $usuario->idUsuario . ',idUsuario',
-            'password'    => 'sometimes|required|string|min:6',
-            'idRol'       => 'sometimes|required|integer|exists:roles,idRol'
+        $usuario = Usuario::findOrFail($id);
+
+        $request->validate([
+            'nombre' => 'sometimes|string|max:255',
+            'apellidoUno' => 'sometimes|string|max:255',
+            'apellidoDos' => 'sometimes|string|max:255',
+            'email' => 'sometimes|email|unique:usuarios,email,' . $id,
+            'telefono' => 'sometimes|string|max:20',
+            'userName' => 'sometimes|string|unique:usuarios,userName,' . $id,
+            'password' => 'nullable|string|min:4',
+            'idRol' => 'sometimes|integer'
         ]);
 
-        if (isset($validated['password'])) {
-            $validated['password'] = Hash::make($validated['password']);
+        $data = [
+            'nombre' => $request->nombre,
+            'apellidoUno' => $request->apellidoUno,
+            'apellidoDos' => $request->apellidoDos,
+            'email' => $request->email,
+            'telefono' => $request->telefono,
+            'userName' => $request->userName,
+            'idRol' => $request->idRol
+        ];
+
+
+        $data = array_filter($data, fn($value) => $value !== null);
+
+        if ($request->filled('password')) {
+            $data['password'] = bcrypt($request->password);
         }
 
-        $usuario->update($validated);
+        $usuario->update($data);
 
         return response()->json([
             'success' => true,
-            'data' => $usuario,
-            'message' => 'Usuario actualizado correctamente'
+            'message' => 'Usuario actualizado correctamente',
+            'data' => $usuario->load('rol')
         ]);
     }
 
-    public function destroy(Usuario $usuario): JsonResponse
+    public function destroy(string $id)
     {
+        $usuario = Usuario::findOrFail($id);
         $usuario->delete();
 
         return response()->json([
             'success' => true,
             'message' => 'Usuario eliminado correctamente'
         ]);
+    }
+
+    public function buscar($username)
+    {
+        return response()->json(
+            Usuario::where('userName', 'LIKE', "%{$username}%")->get()
+        );
     }
 }

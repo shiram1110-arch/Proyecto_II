@@ -1,4 +1,3 @@
-
 function getToken() {
     return localStorage.getItem("token");
 }
@@ -7,44 +6,116 @@ function setToken(token) {
     localStorage.setItem("token", token);
 }
 
-function logout() {
-    localStorage.removeItem("token");
-    window.location.href = "/inicio";
+function getUser() {
+    return JSON.parse(localStorage.getItem("user"));
 }
 
-function parseJwt(token) {
-    try {
-        return JSON.parse(atob(token.split('.')[1]));
-    } catch (e) {
-        return null;
-    }
+function setUser(user) {
+    localStorage.setItem("user", JSON.stringify(user));
+}
+
+function logout() {
+
+    const token = getToken();
+
+    fetch("/api/logout", {
+        method: "POST",
+        headers: {
+            "Authorization": "Bearer " + token,
+            "Accept": "application/json"
+        }
+    }).finally(() => {
+        localStorage.removeItem("token");
+        localStorage.removeItem("user");
+        window.location.href = "/inicio";
+    });
 }
 
 function isAuthenticated() {
-    const token = getToken();
-    return !!token;
+    return !!getToken();
 }
 
-function getPayload() {
+/*
+|--------------------------------------------------------------------------
+| FETCH CON AUTH (SANCTUM)
+|--------------------------------------------------------------------------
+*/
+function authFetch(url, options = {}) {
+
+    const token = getToken();
+
+    const headers = {
+        "Accept": "application/json",
+        ...(options.headers || {})
+    };
+
+    if (token) {
+        headers["Authorization"] = "Bearer " + token;
+    }
+
+    return fetch(url, {
+        ...options,
+        headers
+    }).then(async res => {
+
+        if (res.status === 401) {
+            console.log("Sesión expirada");
+            logout();
+            return;
+        }
+
+        return res;
+    });
+}
+
+/*
+|--------------------------------------------------------------------------
+| CARGAR USUARIO LOGUEADO
+|--------------------------------------------------------------------------
+*/
+async function loadUser() {
+
     const token = getToken();
     if (!token) return null;
-    return parseJwt(token);
+
+    const res = await authFetch("/api/perfil");
+
+    if (!res || !res.ok) {
+        console.error("ERROR PERFIL");
+        return null;
+    }
+
+    const data = await res.json();
+
+    console.log("PERFIL API:", data);
+
+    const user = data.user;
+
+    setUser(user);
+
+    return user;
 }
 
-function getRoles() {
-    const payload = getPayload();
-    if (!payload) return [];
-    return payload.roles || [];
-}
-
+/*
+|--------------------------------------------------------------------------
+| ROLES (CORRECTO PARA LARAVEL)
+|--------------------------------------------------------------------------
+*/
 function isAdmin() {
-    return getRoles().includes("ROLE_ADMIN");
+    const user = getUser();
+    return Number(user?.idRol ?? user?.rol?.idRol) === 1;
 }
 
 function isUser() {
-    return getRoles().includes("ROLE_USER");
+    const user = getUser();
+    return Number(user?.idRol ?? user?.rol?.idRol) === 2;
 }
 
+/*
+|--------------------------------------------------------------------------
+| PROTEGER RUTAS
+|--------------------------------------------------------------------------
+*/
 function requireAuth() {
     if (!isAuthenticated()) {
         window.location.href = "/login";
@@ -60,45 +131,28 @@ function requireAdmin() {
     }
 }
 
-function authFetch(url, options = {}) {
-    const token = getToken();
+/*
+|--------------------------------------------------------------------------
+| MOSTRAR NOMBRE EN HEADER
+|--------------------------------------------------------------------------
+*/
+function getNombre() {
 
-    const headers = {
-        "Content-Type": "application/json",
-        ...(options.headers || {}),
-        ...(token && { "Authorization": "Bearer " + token })
-    };
+    document.addEventListener("DOMContentLoaded", async () => {
 
-    return fetch(url, {
-        ...options,
-        headers
-    }).then(res => {
+        const user = getUser();
 
-        if (res.status === 401) {
-            alert("Sesión expirada");
-            logout();
+        if (!user) {
+            console.log("No user logged");
             return;
         }
 
-        if (res.status === 403) {
-            throw new Error("Forbidden");
-        }
-
-        return res;
-    });
-}
-function getNombre() {
-    document.addEventListener("DOMContentLoaded", async () => {
-
-        const response = await authFetch("/api/usuarios/me");
-
-        if (!response.ok) return;
-
-        const usuario = await response.json();
-
-        const nombreCompleto = `${usuario.nombre} ${usuario.apellidoUno}`;
+        const nombreCompleto =
+            `${user.nombre ?? ""} ${user.apellidoUno ?? ""}`;
 
         const elemento = document.getElementById("nombreUsuario");
+
+        if (!elemento) return;
 
         const ruta = window.location.pathname;
 

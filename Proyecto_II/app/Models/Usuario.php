@@ -45,4 +45,5 @@ class Usuario extends Authenticatable
     {
         return $this->hasMany(Reserva::class, 'idUsuario');
     }
+
 }

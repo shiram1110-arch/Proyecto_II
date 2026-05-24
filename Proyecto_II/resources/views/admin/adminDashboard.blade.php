@@ -53,7 +53,7 @@
             {{-- Gestionar Clases --}}
             <div class="col-md-4">
                 <div class="registro-card p-4 text-center card-hover"
-                    data-url="{{ url('/clasesVista') }}"
+                    data-url="{{ url('/clases/clasesVista') }}"
                     onclick="location.href=this.dataset.url">
 
                     <h5 class="titulo">Gestionar Clases</h5>
@@ -67,7 +67,7 @@
             {{-- Gestionar Reservas --}}
             <div class="col-md-4">
                 <div class="registro-card p-4 text-center card-hover"
-                    data-url="{{ url('/gestionReservas') }}"
+                    data-url="{{ url('/reservas/gestionReservas') }}"
                     onclick="location.href=this.dataset.url">
 
                     <h5 class=" titulo">Gestionar Reservas</h5>

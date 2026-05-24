@@ -1,0 +1,142 @@
+body {
+    background: radial-gradient(circle at center, #1a1a1a, #000000);
+    color: white;
+    font-family: 'Segoe UI', sans-serif;
+}
+
+.navbar {
+    background: linear-gradient(90deg, #0f0f0f, #1a1a1a, #0f0f0f);
+    border-bottom: 1px solid rgba(255, 0, 0, 0.3);
+    box-shadow: 0 0 8px rgba(255, 0, 0, 0.4);
+}
+
+.navbar-brand span {
+    color: white;
+    font-weight: bold;
+    text-shadow: 0 0 8px red;
+}
+
+.card {
+    background: rgba(20, 20, 20, 0.95);
+    border: 1px solid #333;
+    border-radius: 15px;
+    color: white;
+    box-shadow: 0 0 20px rgba(255, 0, 0, 0.2);
+}
+
+.titulo {
+    color: white;
+    text-shadow: 0 0 10px red;
+    font-weight: bold;
+}
+
+.table {
+    color: white;
+    border-radius: 10px;
+    overflow: hidden;
+}
+
+.table thead {
+    background-color: #8B0000;
+}
+
+.table tbody tr {
+    transition: 0.2s;
+}
+
+.table tbody tr:hover {
+    background-color: rgba(255, 0, 0, 0.2);
+}
+
+.table td,
+.table th {
+    vertical-align: middle;
+}
+
+.btn-primary {
+    background-color: #b30000;
+    border: none;
+}
+
+.btn-primary:hover {
+    background-color: #ff1a1a;
+
+}
+
+.btn-login-neon {
+    background: transparent;
+    color: #ffffff !important;
+
+    border: 2px solid rgba(255, 0, 0, 0.7);
+    border-radius: 6px;
+
+    padding: 8px 20px;
+
+    font-weight: 600;
+    letter-spacing: 0.5px;
+
+    text-shadow: 0 0 2px rgba(255, 255, 255, 0.4);
+
+    box-shadow:
+        0 0 5px rgba(255, 0, 0, 0.3),
+        0 0 8px rgba(255, 0, 0, 0.15) inset;
+
+    transition: all 0.25s ease;
+}
+
+.btn-login-neon:hover {
+    background: rgba(255, 0, 0, 0.08);
+    border-color: #ff4d4d;
+
+    box-shadow:
+        0 0 8px rgba(255, 0, 0, 0.5),
+        0 0 12px rgba(255, 0, 0, 0.25) inset;
+
+    transform: scale(1.03);
+}
+
+.estado-reservada {
+    color: #00ff99;
+    font-weight: bold;
+}
+
+.estado-cancelada {
+    color: #ff4d4d;
+    font-weight: bold;
+}
+
+.estado-finalizada {
+    color: #cccccc;
+    font-weight: bold;
+}
+
+.table-responsive {
+    max-height: 400px;
+    overflow-y: auto;
+}
+
+.logo {
+    width: 90px;
+    filter: drop-shadow(0 0 15px red);
+    transition: 0.3s;
+}
+
+.logo:hover {
+    transform: scale(1.05);
+    filter: drop-shadow(0 0 25px red);
+}
+
+.footer {
+    background: radial-gradient(circle at center, #1a1a1a, #000000);
+    color: white;
+    border-top: 1px solid #222;
+}
+
+.footer img {
+    filter: drop-shadow(0 0 10px red);
+    transition: 0.3s;
+}
+
+.footer img:hover {
+    transform: scale(1.05);
+}

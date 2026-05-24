@@ -5,10 +5,7 @@
     <meta charset="UTF-8">
     <title>Login</title>
 
-    {{-- Bootstrap --}}
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
-
-    {{-- CSS --}}
     <link rel="stylesheet" href="{{ asset('css/login.css') }}">
 </head>
 
@@ -25,61 +22,31 @@
             <form id="loginForm">
 
                 <div class="form-floating mb-3">
-
-                    <input
-                        type="text"
-                        id="username"
-                        class="form-control"
-                        placeholder="Usuario"
-                        required
-                    >
-
+                    <input type="text" id="username" class="form-control" placeholder="Usuario" required>
                     <label>Usuario</label>
-
                 </div>
 
                 <div class="form-floating mb-3">
-
-                    <input
-                        type="password"
-                        id="password"
-                        class="form-control"
-                        placeholder="Contraseña"
-                        required
-                    >
-
+                    <input type="password" id="password" class="form-control" placeholder="Contraseña" required>
                     <label>Contraseña</label>
-
                 </div>
 
                 <div class="d-grid">
-
                     <button type="submit" class="btn btn-primary rounded-3">
                         Iniciar sesión
                     </button>
 
                     <div class="text-center mt-3">
-
                         <span>¿No tienes cuenta?</span>
-
                         <a href="{{ url('/registro') }}" class="link-light fw-bold">
                             Crear cuenta
                         </a>
-
                     </div>
-
                 </div>
 
                 <div class="text-center mb-4">
-
                     <br>
-
-                    <img
-                        src="{{ asset('img/logo.png') }}"
-                        alt="logo"
-                        class="logo"
-                    >
-
+                    <img src="{{ asset('img/logo.png') }}" alt="logo" class="logo">
                 </div>
 
             </form>
@@ -88,63 +55,57 @@
 
     </div>
 
-    {{-- Bootstrap JS --}}
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
-
-    {{-- JS --}}
     <script src="{{ asset('js/auth.js') }}"></script>
 
+
     <script>
+        document
+            .getElementById("loginForm")
+            .addEventListener("submit", async function(e) {
 
-        document.getElementById("loginForm").addEventListener("submit", function (e) {
+                e.preventDefault();
 
-            e.preventDefault();
+                const userName = document.getElementById("username").value;
+                const password = document.getElementById("password").value;
 
-            const username = document.getElementById("username").value;
-            const password = document.getElementById("password").value;
+                try {
 
-            fetch("{{ url('/registroCompleto/login') }}", {
+                    const response = await fetch("/api/login", {
 
-                method: "POST",
+                        method: "POST",
 
-                headers: {
-                    "Content-Type": "application/json"
-                },
+                        headers: {
+                            "Content-Type": "application/json",
+                            "Accept": "application/json"
+                        },
 
-                body: JSON.stringify({
-                    username: username,
-                    password: password
-                })
+                        body: JSON.stringify({
+                            userName,
+                            password
+                        })
+                    });
 
-            })
+                    const data = await response.json();
 
-            .then(res => {
+                    if (!response.ok) {
+                        throw new Error(data.message || "Credenciales inválidas");
+                    }
 
-                if (!res.ok)
-                    throw new Error("Credenciales inválidas");
+                    setToken(data.token);
 
-                return res.json();
+                    if (data.usuario) {
+                        setUser(data.usuario);
+                    }
 
-            })
+                    window.location.href = "/inicio";
 
-            .then(data => {
+                } catch (error) {
 
-                setToken(data.token);
-
-                window.location.href = "{{ url('/inicio') }}";
-
-            })
-
-            .catch(err => {
-
-                alert(err.message);
-
+                    console.error(error);
+                    alert(error.message);
+                }
             });
-
-        });
-
     </script>
-
 </body>
 
 </html>

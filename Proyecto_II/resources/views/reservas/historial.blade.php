@@ -12,7 +12,7 @@
 
     {{-- Bootstrap --}}
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css"
-          rel="stylesheet">
+        rel="stylesheet">
 
 </head>
 
@@ -32,7 +32,7 @@
             <div class="d-flex">
 
                 <a href="{{ url('/inicio') }}"
-                   class="btn btn-login-neon">
+                    class="btn btn-login-neon">
 
                     Volver
                 </a>
@@ -76,43 +76,43 @@
 
                 <tbody>
 
-                    @forelse ($reservas as $reserva)
+                    @forelse ($reservas->sortByDesc('fechaReserva') as $reserva)
 
-                        <tr>
+                    <tr>
 
-                            <td>
-                                {{ $reserva->clase->nombre }}
-                            </td>
+                        <td>
+                            {{ $reserva->clase->nombre }}
+                        </td>
 
-                            <td>
-                                {{ $reserva->clase->capacidad }}
-                            </td>
+                        <td>
+                            {{ $reserva->clase->capacidad }}
+                        </td>
 
-                            <td>
-                                {{ \Carbon\Carbon::parse($reserva->fechaReserva)->format('Y-m-d') }}
-                            </td>
+                        <td>
+                            {{ \Carbon\Carbon::parse($reserva->fechaReserva)->format('Y-m-d') }}
+                        </td>
 
-                            <td>
-                                {{ \Carbon\Carbon::parse($reserva->clase->horario)->format('H:i') }}
-                            </td>
+                        <td>
+                            {{ \Carbon\Carbon::parse($reserva->clase->horario)->format('H:i') }}
+                        </td>
 
-                            <td>
-                                {{ $reserva->estado }}
-                            </td>
+                        <td>
+                            {{ $reserva->estado }}
+                        </td>
 
-                        </tr>
+                    </tr>
 
                     @empty
 
-                        <tr>
+                    <tr>
 
-                            <td colspan="5">
+                        <td colspan="5">
 
-                                No hay reservas registradas
+                            No hay reservas registradas
 
-                            </td>
+                        </td>
 
-                        </tr>
+                    </tr>
 
                     @endforelse
 
@@ -130,9 +130,9 @@
         <div class="container">
 
             <img src="{{ asset('img/logo.png') }}"
-                 alt="Logo"
-                 width="120"
-                 class="mb-2">
+                alt="Logo"
+                width="120"
+                class="mb-2">
 
             <p class="mb-1">
                 © 2026 VIKINGS

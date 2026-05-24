@@ -5,10 +5,8 @@
     <meta charset="UTF-8">
     <title>Gestión de Clases</title>
 
-    {{-- Bootstrap --}}
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
 
-    {{-- CSS Laravel --}}
     <link rel="stylesheet" href="{{ asset('css/usuarios.css') }}">
 </head>
 
@@ -28,13 +26,12 @@
         <div class="d-flex gap-2">
 
             <button class="btn btn-main"
-                data-url="{{ url('/crearClase') }}"
-                onclick="window.location.href=this.dataset.url">
+                onclick="window.location.href='/clases/crear'">
 
                 + Crear Clase
             </button>
 
-            <a href="{{ url('/adminDashboard') }}"
+            <a href="/admin/adminDashboard"
                 class="btn btn-login-neon">
 
                 Volver
@@ -49,10 +46,7 @@
 
         <div class="text-center mb-4">
             <h2 class="titulo">Lista de Clases</h2>
-
-            <p class="subtitulo">
-                Administra las clases del sistema
-            </p>
+            <p class="subtitulo">Administra las clases del sistema</p>
         </div>
 
         {{-- Buscador --}}
@@ -66,8 +60,7 @@
         {{-- Tabla --}}
         <div class="registro-card p-4">
 
-            <table class="table table-dark table-hover text-center align-middle"
-                id="tablaClases">
+            <table class="table table-dark table-hover text-center align-middle">
 
                 <thead>
                     <tr>
@@ -80,52 +73,7 @@
                     </tr>
                 </thead>
 
-                <tbody id="tbodyClases">
-
-                    @foreach ($clases as $clase)
-
-                    <tr>
-
-                        <td>{{ $clase->nombre }}</td>
-
-                        <td>{{ $clase->descripcion }}</td>
-
-                        <td>{{ $clase->diaSemana }}</td>
-
-                        <td>
-                            {{ \Carbon\Carbon::parse($clase->horario)->format('H:i') }}
-                        </td>
-
-                        <td>{{ $clase->capacidad }}</td>
-
-                        <td>
-
-                            <div class="d-flex justify-content-center gap-2">
-
-                                {{-- Editar --}}
-                                <a href="{{ url('/clases/editar/' . $clase->idClase) }}"
-                                    class="btn btn-sm btn-primary">
-
-                                    Editar
-                                </a>
-
-                                {{-- Eliminar --}}
-                                <button class="btn btn-sm btn-danger"
-                                    data-url="{{ $clase->idClase }}"
-                                    onclick="eliminarClase(this.dataset.url)">
-
-                                    Eliminar
-                                </button>
-
-                            </div>
-
-                        </td>
-
-                    </tr>
-
-                    @endforeach
-
-                </tbody>
+                <tbody id="tbodyClases"></tbody>
 
             </table>
 
@@ -133,100 +81,119 @@
 
     </div>
 
-    {{-- JS --}}
     <script src="{{ asset('js/auth.js') }}"></script>
 
     <script>
         requireAdmin();
 
-        // Eliminar clase
-        function eliminarClase(id) {
+        let todasClases = [];
+
+        document.addEventListener("DOMContentLoaded", () => {
+            cargarClases();
+        });
+
+        // =========================
+        // CARGAR CLASES (API)
+        // =========================
+        async function cargarClases() {
+
+            try {
+                const res = await fetch('/api/clases', {
+                    headers: {
+                        'Accept': 'application/json'
+                    }
+                });
+
+                const json = await res.json();
+
+                todasClases = json.data;
+
+                render(todasClases);
+
+            } catch (err) {
+                console.error("Error cargando clases:", err);
+            }
+        }
+
+        // =========================
+        // RENDER TABLA
+        // =========================
+        function render(data) {
+
+            const tbody = document.getElementById("tbodyClases");
+            tbody.innerHTML = "";
+
+            data.forEach(clase => {
+
+                tbody.innerHTML += `
+                    <tr>
+                        <td>${clase.nombre}</td>
+                        <td>${clase.descripcion ?? ''}</td>
+                        <td>${clase.diaSemana}</td>
+                        <td>${clase.horario.substring(0,5)}</td>
+                        <td>${clase.capacidad}</td>
+
+                        <td>
+                            <div class="d-flex justify-content-center gap-2">
+
+                                <a href="/clases/editar/${clase.idClase}"
+                                   class="btn btn-sm btn-primary">
+                                   Editar
+                                </a>
+
+                                <button class="btn btn-sm btn-danger"
+                                        onclick="eliminarClase(${clase.idClase})">
+                                   Eliminar
+                                </button>
+
+                            </div>
+                        </td>
+                    </tr>
+                `;
+            });
+        }
+
+        // =========================
+        // ELIMINAR (API)
+        // =========================
+        async function eliminarClase(id) {
 
             if (!confirm("¿Seguro que deseas eliminar esta clase?")) return;
 
-            authFetch(`/clases/${id}`, {
-                    method: "DELETE"
-                })
-                .then(res => {
-
-                    if (!res.ok) {
-                        throw new Error("Error al eliminar");
+            try {
+                const res = await fetch(`/api/clases/${id}`, {
+                    method: "DELETE",
+                    headers: {
+                        'Accept': 'application/json'
                     }
+                });
 
-                    alert("✅ Clase eliminada");
+                if (!res.ok) throw new Error("Error al eliminar");
 
-                    window.location.reload();
+                alert("✅ Clase eliminada");
 
-                })
-                .catch(err => alert(err.message));
+                cargarClases();
+
+            } catch (err) {
+                alert(err.message);
+            }
         }
 
-        // Buscador
-        document.getElementById("buscador")
-            .addEventListener("keyup", function() {
+        // =========================
+        // BUSCADOR (FRONTEND)
+        // =========================
+        document.getElementById("buscador").addEventListener("keyup", (e) => {
 
-                let texto = this.value.trim();
+            const texto = e.target.value.toLowerCase();
 
-                if (texto === "") {
-                    window.location.reload();
-                    return;
-                }
+            const filtradas = todasClases.filter(c =>
+                c.nombre.toLowerCase().includes(texto) ||
+                (c.descripcion ?? '').toLowerCase().includes(texto)
+            );
 
-                fetch(`/clases/buscar/${texto}`)
-                    .then(res => res.json())
-                    .then(data => {
+            render(filtradas);
+        });
 
-                        let tbody = document.getElementById("tbodyClases");
-
-                        tbody.innerHTML = "";
-
-                        data.forEach(clase => {
-
-                            let horaFormateada = clase.horario ?
-                                clase.horario.substring(0, 5) :
-                                "";
-
-                            tbody.innerHTML += `
-                                <tr>
-
-                                    <td>${clase.nombre}</td>
-
-                                    <td>${clase.descripcion}</td>
-
-                                    <td>${clase.diaSemana}</td>
-
-                                    <td>${horaFormateada}</td>
-
-                                    <td>${clase.capacidad}</td>
-
-                                    <td>
-
-                                        <div class="d-flex justify-content-center gap-2">
-
-                                            <a href="/clases/editar/${clase.idClase}"
-                                               class="btn btn-sm btn-primary">
-
-                                                Editar
-                                            </a>
-
-                                            <button class="btn btn-sm btn-danger"
-                                                    onclick="eliminarClase(${clase.idClase})">
-
-                                                Eliminar
-                                            </button>
-
-                                        </div>
-
-                                    </td>
-
-                                </tr>
-                            `;
-                        });
-
-                    })
-                    .catch(err => console.error("Error en búsqueda:", err));
-
-            });
     </script>
 
 </body>

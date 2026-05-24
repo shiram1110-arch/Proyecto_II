@@ -1,83 +1,36 @@
 <?php
 
-use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
-use Illuminate\Support\Facades\Hash;
-
-use App\Models\Usuario;
-
+use App\Http\Controllers\AuthController;
 use App\Http\Controllers\UsuarioController;
 use App\Http\Controllers\ClaseController;
 use App\Http\Controllers\ReservaController;
+use App\Http\Controllers\Api\AuthApiController;
 
-/*
-|--------------------------------------------------------------------------
-| AUTH
-|--------------------------------------------------------------------------
-*/
+Route::post('/login', [AuthApiController::class, 'login']);
 
-Route::post('/login', function (Request $request) {
-
-    $request->validate([
-        'userName' => 'required|string',
-        'password' => 'required|string'
-    ]);
-
-    // ✔️ MODELO CORRECTO
-    $user = Usuario::where('userName', $request->userName)->first();
-
-    // ✔️ VALIDACIÓN CORRECTA
-    if (! $user || ! Hash::check($request->password, $user->password)) {
-        return response()->json([
-            'message' => 'Credenciales inválidas'
-        ], 401);
-    }
-
-    // ✔️ TOKEN SANCTUM
-    $token = $user->createToken('token')->plainTextToken;
-
-    return response()->json([
-        'token' => $token,
-        'user' => $user
-    ]);
-});
+Route::post('/usuarios',[UsuarioController::class,'store']);
+Route::get('/usuarios/buscar/{username}',[UsuarioController::class,'buscar']);
 
 
-Route::post('/logout', function (Request $request) {
-
-    $request->user()->currentAccessToken()->delete();
-
-    return response()->json([
-        'message' => 'Sesión cerrada'
-    ]);
-})->middleware('auth:sanctum');
 
 
-Route::middleware('auth:sanctum')->get('/perfil', function (Request $request) {
-    return $request->user();
-});
+Route::middleware('auth:sanctum')->group(function(){
 
+Route::post('/logout',[AuthController::class,'logout']);
+Route::get('/perfil',[AuthController::class,'me']);
 
-/*
-|--------------------------------------------------------------------------
-| API PROTEGIDA
-|--------------------------------------------------------------------------
-*/
+Route::get('/usuarios',[UsuarioController::class,'index']);
+Route::get('/usuarios/{usuario}',[UsuarioController::class,'show']);
+Route::put('/usuarios/{usuario}',[UsuarioController::class,'update']);
+Route::delete('/usuarios/{usuario}',[UsuarioController::class,'destroy']);
 
-Route::middleware('auth:sanctum')->group(function () {
+Route::apiResource('clases',ClaseController::class);
 
-    // USUARIOS
-    Route::apiResource('usuarios', UsuarioController::class);
+Route::get('/reservas/mis-clases',[ReservaController::class,'misClases']);
+Route::get('/reservas/estado/{estado}',[ReservaController::class,'filtrarEstado']);
+Route::put('/reservas/cancelar/{id}',[ReservaController::class,'cancelar']);
 
-    // CLASES
-    Route::apiResource('clases', ClaseController::class);
+Route::apiResource('reservas',ReservaController::class);
 
-    Route::get('clases/dia/{diaSemana}', [ClaseController::class, 'getClasesPorDia']);
-    Route::get('clases/buscar/{nombre}', [ClaseController::class, 'buscar']);
-
-    // RESERVAS
-    Route::apiResource('reservas', ReservaController::class);
-
-    Route::get('reservas/estado/{estado}', [ReservaController::class, 'getByEstado']);
-    Route::put('reservas/cancelar/{id}', [ReservaController::class, 'cancelar']);
 });
