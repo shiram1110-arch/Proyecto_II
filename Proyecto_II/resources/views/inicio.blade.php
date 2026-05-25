@@ -30,7 +30,6 @@
 
     </header>
 
-    <!-- CAROUSEL -->
     <div id="carouselExample" class="carousel slide" data-bs-ride="carousel">
 
         <div class="carousel-inner">
@@ -51,7 +50,6 @@
 
     </div>
 
-    <!-- CLASES -->
     <section class="container mt-5">
 
         <h2 class="text-center mb-4 titulo">Nuestras Clases</h2>
@@ -80,7 +78,6 @@
 
     </section>
 
-    <!-- FOOTER -->
     <footer class="footer mt-5 py-4 text-center">
 
         <div class="container">
@@ -171,8 +168,6 @@
             `;
                 }
             }
-
-
 
             await getNombre();
         });

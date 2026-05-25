@@ -25,11 +25,23 @@
 
             <a class="navbar-brand" href="#">
 
-                {{ $usuario->nombre ?? 'Usuario' }}
+                <span id="nombreUsuarioHistorial">{{ $usuario->nombre ?? 'Usuario' }}</span>
 
             </a>
 
             <div class="d-flex">
+
+                <button type="button"
+                    class="btn btn-outline-light me-2"
+                    onclick="cambiarIdiomaHistorial('es')">
+                    ES
+                </button>
+
+                <button type="button"
+                    class="btn btn-outline-light me-2"
+                    onclick="cambiarIdiomaHistorial('en')">
+                    EN
+                </button>
 
                 <a href="{{ url('/inicio') }}"
                     class="btn btn-login-neon">
@@ -74,7 +86,7 @@
 
                 </thead>
 
-                <tbody>
+                <tbody id="tbodyHistorial">
 
                     @forelse ($reservas->sortByDesc('fechaReserva') as $reserva)
 
@@ -145,6 +157,107 @@
         </div>
 
     </footer>
+
+    <script src="{{ asset('js/auth.js') }}"></script>
+
+    <script>
+        requireAuth();
+
+        const usuario = getUser();
+        const nombreUsuario = document.getElementById("nombreUsuarioHistorial");
+
+        if (usuario && nombreUsuario) {
+            nombreUsuario.textContent = usuario.nombre || "Usuario";
+        }
+
+        const textosHistorial = {
+            es: {
+                empty: "No hay reservas registradas",
+                active: "ACTIVA",
+                cancelled: "CANCELADA",
+                finished: "FINALIZADA",
+                loadError: "No se pudo cargar el historial"
+            },
+            en: {
+                empty: "No reservations found",
+                active: "ACTIVE",
+                cancelled: "CANCELLED",
+                finished: "FINISHED",
+                loadError: "The reservation history could not be loaded"
+            }
+        };
+
+        function textoHistorial(key) {
+            return textosHistorial[getLocale()]?.[key] || textosHistorial.es[key];
+        }
+
+        function traducirEstadoHistorial(estado) {
+            if (estado === "ACTIVA") return textoHistorial("active");
+            if (estado === "CANCELADA") return textoHistorial("cancelled");
+            if (estado === "FINALIZADA") return textoHistorial("finished");
+            return estado;
+        }
+
+        function cambiarIdiomaHistorial(locale) {
+            setLocale(locale);
+            cargarHistorial();
+        }
+
+        function formatDate(value) {
+            if (!value) return "";
+
+            return String(value).split("T")[0];
+        }
+
+        function formatTime(value) {
+            if (!value) return "";
+
+            const text = String(value);
+            return text.includes("T")
+                ? text.substring(11, 16)
+                : text.substring(0, 5);
+        }
+
+        function renderHistorial(reservas) {
+            const tbody = document.getElementById("tbodyHistorial");
+            tbody.innerHTML = "";
+
+            if (!reservas.length) {
+                tbody.innerHTML = `
+                    <tr>
+                        <td colspan="5">${textoHistorial("empty")}</td>
+                    </tr>
+                `;
+                return;
+            }
+
+            reservas
+                .sort((a, b) => String(b.fechaReserva).localeCompare(String(a.fechaReserva)))
+                .forEach(reserva => {
+                    tbody.innerHTML += `
+                        <tr>
+                            <td>${reserva.clase?.nombre ?? ""}</td>
+                            <td>${reserva.clase?.capacidad ?? ""}</td>
+                            <td>${formatDate(reserva.fechaReserva)}</td>
+                            <td>${formatTime(reserva.clase?.horario)}</td>
+                            <td>${traducirEstadoHistorial(reserva.estado)}</td>
+                        </tr>
+                    `;
+                });
+        }
+
+        function cargarHistorial() {
+            authFetch("/reservas/mis-clases")
+            .then(res => res.json())
+            .then(json => renderHistorial(json.data || []))
+            .catch(error => {
+                console.error(error);
+                alert(textoHistorial("loadError"));
+            });
+        }
+
+        cargarHistorial();
+    </script>
 
 </body>
 

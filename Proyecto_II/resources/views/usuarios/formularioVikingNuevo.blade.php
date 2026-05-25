@@ -121,8 +121,6 @@ document.getElementById("registro").addEventListener("submit", async (e) => {
 
     usernameError.style.display = "none";
 
-    let rolId = 1;
-
     const data = {
 
         userName: usernameInput.value,
@@ -130,8 +128,7 @@ document.getElementById("registro").addEventListener("submit", async (e) => {
         apellidoUno: document.querySelector("[name=apellidoUno]").value,
         apellidoDos: document.querySelector("[name=apellidoDos]").value,
         telefono: document.querySelector("[name=telefono]").value,
-        email: document.querySelector("[name=email]").value,
-        idRol: rolId
+        email: document.querySelector("[name=email]").value
     };
 
     const password =
@@ -141,25 +138,19 @@ document.getElementById("registro").addEventListener("submit", async (e) => {
         data.password = password;
     }
 
-    let url = "/api/usuarios";
+    let url = isAdmin() ? "/usuarios/admin" : "/usuarios";
     let method = "POST";
 
     if (idUsuario) {
-        url = `/api/usuarios/${idUsuario}`;
-        data._method = "PUT"; // 🔥 FIX SIN CAMBIAR TU FLUJO
+        url = `/usuarios/${idUsuario}`;
+        method = "PUT";
     }
 
     try {
 
-        const res = await fetch(url, {
+        const res = await authFetch(url, {
 
             method,
-
-            headers: {
-                "Content-Type": "application/json",
-                "Accept": "application/json",
-                "Authorization": "Bearer " + token
-            },
 
             body: JSON.stringify(data)
         });

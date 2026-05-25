@@ -20,7 +20,14 @@ function isAuthenticated() {
     return !!getToken();
 }
 
-// 🔥 FIX: seguro
+function getLocale() {
+    return localStorage.getItem("locale") || "es";
+}
+
+function setLocale(locale) {
+    localStorage.setItem("locale", ["es", "en"].includes(locale) ? locale : "es");
+}
+
 function removeToken() {
     localStorage.removeItem("token");
 }
@@ -36,6 +43,7 @@ async function authFetch(url, options = {}) {
         Accept: "application/json",
         "Content-Type": "application/json",
         "X-Requested-With": "XMLHttpRequest",
+        "Accept-Language": getLocale(),
         ...(options.headers || {})
     };
 
@@ -48,7 +56,6 @@ async function authFetch(url, options = {}) {
         headers
     });
 
-    // DEBUG IMPORTANTE
     console.log("URL:", `${API_URL}${url}`);
     console.log("HEADERS:", headers);
 
@@ -98,8 +105,8 @@ async function loadUser() {
 
     const data = JSON.parse(text);
 
-    setUser(data.user);
-    return data.user;
+    setUser(data.data);
+    return data.data;
 }
 
 function isAdmin() {
@@ -126,10 +133,6 @@ function getNombre() {
         span.textContent = `¡Hola, ${nombre} ${apellido}! 👋`;
     }
 }
-
-/* =====================================================
-   🔥 FALTABA ESTO (CRÍTICO)
-===================================================== */
 
 function requireAdmin() {
 

@@ -83,17 +83,11 @@
 <script>
 requireAdmin();
 
-/* =========================
-   FIX: SELECT DIA SEMANA
-========================= */
 const select = document.querySelector("[name=diaSemana]");
 if (select && "{{ $clase->diaSemana ?? '' }}") {
     select.value = "{{ $clase->diaSemana ?? '' }}";
 }
 
-/* =========================
-   SUBMIT FORM
-========================= */
 document.getElementById("formClase").addEventListener("submit", async (e) => {
     e.preventDefault();
 

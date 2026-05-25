@@ -57,43 +57,43 @@
         {{-- Días --}}
         <div class="dias text-center mb-4">
 
-            <a href="{{ url('/horarioClases?dia_semana=LUNES') }}"
+            <a href="{{ url('/clases/horarioClases?dia_semana=LUNES') }}"
                class="dia {{ $diaActual == 'LUNES' ? 'activo' : '' }}">
 
                 LUN
             </a>
 
-            <a href="{{ url('/horarioClases?dia_semana=MARTES') }}"
+            <a href="{{ url('/clases/horarioClases?dia_semana=MARTES') }}"
                class="dia {{ $diaActual == 'MARTES' ? 'activo' : '' }}">
 
                 MAR
             </a>
 
-            <a href="{{ url('/horarioClases?dia_semana=MIERCOLES') }}"
+            <a href="{{ url('/clases/horarioClases?dia_semana=MIERCOLES') }}"
                class="dia {{ $diaActual == 'MIERCOLES' ? 'activo' : '' }}">
 
                 MIÉ
             </a>
 
-            <a href="{{ url('/horarioClases?dia_semana=JUEVES') }}"
+            <a href="{{ url('/clases/horarioClases?dia_semana=JUEVES') }}"
                class="dia {{ $diaActual == 'JUEVES' ? 'activo' : '' }}">
 
                 JUE
             </a>
 
-            <a href="{{ url('/horarioClases?dia_semana=VIERNES') }}"
+            <a href="{{ url('/clases/horarioClases?dia_semana=VIERNES') }}"
                class="dia {{ $diaActual == 'VIERNES' ? 'activo' : '' }}">
 
                 VIE
             </a>
 
-            <a href="{{ url('/horarioClases?dia_semana=SABADO') }}"
+            <a href="{{ url('/clases/horarioClases?dia_semana=SABADO') }}"
                class="dia {{ $diaActual == 'SABADO' ? 'activo' : '' }}">
 
                 SÁB
             </a>
 
-            <a href="{{ url('/horarioClases?dia_semana=DOMINGO') }}"
+            <a href="{{ url('/clases/horarioClases?dia_semana=DOMINGO') }}"
                class="dia {{ $diaActual == 'DOMINGO' ? 'activo' : '' }}">
 
                 DOM
@@ -126,7 +126,6 @@
 
                     <a href="{{ url('/reservas/' . $clase->idClase) }}"
                        class="btn-mas">
-
                         Más
                     </a>
 

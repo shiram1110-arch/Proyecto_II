@@ -49,6 +49,18 @@
 
         <div class="d-flex gap-2">
 
+            <button type="button"
+                    class="btn btn-outline-light"
+                    onclick="cambiarIdiomaReservas('es')">
+                ES
+            </button>
+
+            <button type="button"
+                    class="btn btn-outline-light"
+                    onclick="cambiarIdiomaReservas('en')">
+                EN
+            </button>
+
             <a href="{{ url('/admin/adminDashboard') }}"
                class="btn btn-login-neon">
                 Volver
@@ -163,7 +175,7 @@
                                 <button type="button"
                                         class="btn btn-sm btn-warning"
                                         data-url="{{ $reserva->idReserva }}"
-                                        onclick="cancelarReserva(this=dataset.url)"
+                                        onclick="cancelarReserva(this.dataset.url)"
 
                                         {{ $reserva->estado == 'CANCELADA' ? 'disabled' : '' }}>
 
@@ -174,7 +186,7 @@
                                 <button type="button"
                                         class="btn btn-sm btn-danger"
                                         data-url="{{ $reserva->idReserva }}"
-                                        onclick="eliminarReserva(this=dataset.url)">
+                                        onclick="eliminarReserva(this.dataset.url)">
 
                                     Eliminar
                                 </button>
@@ -200,23 +212,140 @@
 
         requireAdmin();
 
-        // Eliminar
+        document.addEventListener("DOMContentLoaded", cargarReservas);
+
+        const textosReservas = {
+            es: {
+                empty: "No hay reservas",
+                active: "ACTIVA",
+                cancelled: "CANCELADA",
+                finished: "FINALIZADA",
+                cancel: "Cancelar",
+                delete: "Eliminar",
+                confirmDelete: "Seguro que deseas eliminar esta reserva?",
+                confirmCancel: "Seguro que deseas cancelar esta reserva?",
+                deleteFallback: "Error al eliminar reserva",
+                cancelFallback: "Error al cancelar",
+                loadError: "Error al cargar reservas",
+                filterError: "Error al filtrar"
+            },
+            en: {
+                empty: "No reservations found",
+                active: "ACTIVE",
+                cancelled: "CANCELLED",
+                finished: "FINISHED",
+                cancel: "Cancel",
+                delete: "Delete",
+                confirmDelete: "Are you sure you want to delete this reservation?",
+                confirmCancel: "Are you sure you want to cancel this reservation?",
+                deleteFallback: "Error deleting reservation",
+                cancelFallback: "Error cancelling reservation",
+                loadError: "Error loading reservations",
+                filterError: "Error filtering reservations"
+            }
+        };
+
+        function textoReservas(key) {
+            return textosReservas[getLocale()]?.[key] || textosReservas.es[key];
+        }
+
+        function traducirEstado(estado) {
+            if (estado === "ACTIVA") return textoReservas("active");
+            if (estado === "CANCELADA") return textoReservas("cancelled");
+            if (estado === "FINALIZADA") return textoReservas("finished");
+            return estado;
+        }
+
+        function cambiarIdiomaReservas(locale) {
+            setLocale(locale);
+            cargarReservas();
+        }
+
+        function renderReservas(reservas) {
+
+            let tbody =
+                document.getElementById("tbodyReservas");
+
+            tbody.innerHTML = "";
+
+            if (reservas.length === 0) {
+
+                tbody.innerHTML = `
+                    <tr>
+                        <td colspan="5">
+                            ${textoReservas("empty")}
+                        </td>
+                    </tr>
+                `;
+
+                return;
+            }
+
+            reservas.forEach(r => {
+
+                const idReserva = r.idReserva;
+                const nombreUsuario = r.nombreUsuario ?? r.usuario?.nombre ?? "";
+                const nombreClase = r.nombreClase ?? r.clase?.nombre ?? "";
+                const fechaReserva = String(r.fechaReserva ?? "").split("T")[0];
+
+                let color =
+                    r.estado === "ACTIVA"
+                    ? "text-success"
+                    : r.estado === "CANCELADA"
+                    ? "text-warning"
+                    : "text-info";
+
+                let disabled =
+                    r.estado === "CANCELADA"
+                    ? "disabled"
+                    : "";
+
+                tbody.innerHTML += `
+                    <tr>
+                        <td>${nombreUsuario}</td>
+                        <td>${nombreClase}</td>
+                        <td>${fechaReserva}</td>
+                        <td class="${color}">
+                            ${traducirEstado(r.estado)}
+                        </td>
+                        <td>
+                            <button type="button"
+                                    class="btn btn-sm btn-warning"
+                                    onclick="cancelarReserva(${idReserva})"
+                                    ${disabled}>
+                                ${textoReservas("cancel")}
+                            </button>
+
+                            <button type="button"
+                                    class="btn btn-sm btn-danger"
+                                    onclick="eliminarReserva(${idReserva})">
+                                ${textoReservas("delete")}
+                            </button>
+                        </td>
+                    </tr>
+                `;
+            });
+        }
+
+        function cargarReservas() {
+            authFetch("/reservas")
+                .then(res => res.json())
+                .then(json => renderReservas(json.data || []))
+                .catch(err => {
+                    console.error(err);
+                    alert(textoReservas("loadError"));
+                });
+        }
+
         function eliminarReserva(id) {
 
-            if (!confirm("¿Seguro que deseas eliminar esta reserva?")) {
+            if (!confirm(textoReservas("confirmDelete"))) {
                 return;
             }
 
-            fetch(`/api/reservas/${id}`, {
+            authFetch(`/reservas/${id}`, {
 
-                method: "DELETE",
-
-                headers: {
-
-                    "X-CSRF-TOKEN": document
-                        .querySelector('meta[name="csrf-token"]')
-                        .getAttribute("content")
-                }
+                method: "DELETE"
 
             })
 
@@ -224,14 +353,17 @@
 
                 if (!res.ok) {
 
-                    throw new Error(
-                        "Error al eliminar reserva"
-                    );
+                    return res.json().then(error => {
+                        throw new Error(error.message || textoReservas("deleteFallback"));
+                    });
                 }
 
-                alert("🗑️ Reserva eliminada");
+                return res.json();
+            })
 
-                location.reload();
+            .then(data => {
+                alert(data?.message || textoReservas("delete"));
+                cargarReservas();
             })
 
             .catch(err => {
@@ -242,23 +374,15 @@
             });
         }
 
-        // Cancelar
         function cancelarReserva(id) {
 
-            if (!confirm("¿Seguro que deseas cancelar esta reserva?")) {
+            if (!confirm(textoReservas("confirmCancel"))) {
                 return;
             }
 
-            fetch(`/api/reservas/cancelar/${id}`, {
+            authFetch(`/reservas/cancelar/${id}`, {
 
-                method: "PUT",
-
-                headers: {
-
-                    "X-CSRF-TOKEN": document
-                        .querySelector('meta[name="csrf-token"]')
-                        .getAttribute("content")
-                }
+                method: "PUT"
 
             })
 
@@ -266,14 +390,17 @@
 
                 if (!res.ok) {
 
-                    throw new Error(
-                        "Error al cancelar"
-                    );
+                    return res.json().then(error => {
+                        throw new Error(error.message || textoReservas("cancelFallback"));
+                    });
                 }
 
-                alert("⚠️ Reserva cancelada");
+                return res.json();
+            })
 
-                location.reload();
+            .then(data => {
+                alert(data?.message || textoReservas("cancel"));
+                cargarReservas();
             })
 
             .catch(err => {
@@ -284,7 +411,6 @@
             });
         }
 
-        // Filtrar
         function filtrar(estado, btn) {
 
             document
@@ -301,88 +427,18 @@
 
             if (estado === "") {
 
-                location.reload();
+                cargarReservas();
 
                 return;
             }
 
-            fetch(`/api/reservas/estado/${estado}`)
+            authFetch(`/reservas/estado/${estado}`)
 
                 .then(res => res.json())
 
                 .then(data => {
 
-                    let tbody =
-                        document.getElementById("tbodyReservas");
-
-                    tbody.innerHTML = "";
-
-                    if (data.length === 0) {
-
-                        tbody.innerHTML = `
-                            <tr>
-                                <td colspan="5">
-                                    No hay reservas
-                                </td>
-                            </tr>
-                        `;
-
-                        return;
-                    }
-
-                    data.forEach(r => {
-
-                        let color =
-                            r.estado === "ACTIVA"
-                            ? "text-success"
-                            : r.estado === "CANCELADA"
-                            ? "text-warning"
-                            : "text-info";
-
-                        let disabled =
-                            r.estado === "CANCELADA"
-                            ? "disabled"
-                            : "";
-
-                        tbody.innerHTML += `
-
-                            <tr>
-
-                                <td>${r.nombreUsuario}</td>
-
-                                <td>${r.nombreClase}</td>
-
-                                <td>${r.fechaReserva}</td>
-
-                                <td class="${color}">
-                                    ${r.estado}
-                                </td>
-
-                                <td>
-
-                                    <button type="button"
-                                            class="btn btn-sm btn-warning"
-
-                                            onclick="cancelarReserva(${r.idReserva})"
-
-                                            ${disabled}>
-
-                                        Cancelar
-                                    </button>
-
-                                    <button type="button"
-                                            class="btn btn-sm btn-danger"
-
-                                            onclick="eliminarReserva(${r.idReserva})">
-
-                                        Eliminar
-                                    </button>
-
-                                </td>
-
-                            </tr>
-                        `;
-                    });
+                    renderReservas(data.data || []);
 
                 })
 
@@ -390,7 +446,7 @@
 
                     console.error(err);
 
-                    alert("Error al filtrar");
+                    alert(textoReservas("filterError"));
                 });
         }
 

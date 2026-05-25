@@ -10,3 +10,9 @@ Content-Type: application/json
 GET http://localhost:8000/api/clases
 Authorization: Bearer 1|b9OTmdWFRDgqZBEz1kfvWFFeGmsXqNHO0irSstTj72ee8aa8
 Accept: application/json 
+
+###
+GET http://localhost:8000/api/reservas
+Accept-Language: en
+Authorization: Bearer 124|jsreN90qo6Ergo7Fq3CVMmjp3y7TvaBOhmyEWgyB1b28ab5b
+Accept: application/json

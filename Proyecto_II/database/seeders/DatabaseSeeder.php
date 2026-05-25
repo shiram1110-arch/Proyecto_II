@@ -11,13 +11,12 @@ class DatabaseSeeder extends Seeder
 {
     public function run(): void
     {
-        // 1. CREAR ROLES PRIMERO
+
         DB::table('roles')->insert([
             ['idRol' => 1, 'nombre' => 'Admin'],
             ['idRol' => 2, 'nombre' => 'Usuario']
         ]);
 
-        // 2. ADMIN
         Usuario::create([
             'nombre' => 'Admin',
             'apellidoUno' => 'Sistema',
@@ -29,7 +28,6 @@ class DatabaseSeeder extends Seeder
             'idRol' => 1
         ]);
 
-        // 3. USUARIO NORMAL
         Usuario::create([
             'nombre' => 'Juan',
             'apellidoUno' => 'Pérez',

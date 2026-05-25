@@ -5,28 +5,15 @@ use App\Http\Controllers\LoginController;
 use App\Http\Controllers\AuthController;
 use App\Models\Usuario;
 use App\Models\Reserva;
-/*
-|--------------------------------------------------------------------------
-| WEB ROUTES
-|--------------------------------------------------------------------------
-*/
 
-// =====================
-// VISTAS GENERALES
-// =====================
 
 Route::get('/', function () {
-    return view('welcome');
-})->name('welcome');
-
-Route::get('/inicio', function () {
-    return view('inicio'); // 🔥 CORREGIDO (antes usuarios.inicio)
+    return view('inicio');
 })->name('inicio');
 
-
-// =====================
-// LOGIN Y AUTENTICACIÓN
-// =====================
+Route::get('/inicio', function () {
+    return view('inicio'); 
+})->name('inicio');
 
 Route::get('/login', [AuthController::class, 'showLogin'])
     ->name('login');
@@ -40,27 +27,15 @@ Route::post('/logout', [AuthController::class, 'logout'])
 Route::post('/registroCompleto/login', [LoginController::class, 'login']);
 
 
-// =====================
-// REGISTRO USUARIO
-// =====================
-
 Route::get('/registro', function () {
     return view('usuarios.formularioVikingNuevo');
 })->name('registro');
 
 
-// =====================
-// ADMIN
-// =====================
-
 Route::get('/admin/adminDashboard', function () {
     return view('admin.adminDashboard');
 })->name('adminDashboard');
 
-
-// =====================
-// CLASES
-// =====================
 
 Route::get('/clases/clasesVista', function () {
     return view('clases.clasesVista');
@@ -73,6 +48,12 @@ Route::get('/clases/crear', function () {
 use Illuminate\Http\Request;
 use App\Models\Clase;
 
+Route::get('/clases/editar/{id}', function ($id) {
+    $clase = Clase::findOrFail($id);
+
+    return view('clases.crearClase', compact('clase'));
+});
+
 Route::get('/clases/horarioClases', function (Request $request) {
 
     $diaActual = $request->get('dia_semana', 'LUNES');
@@ -83,35 +64,31 @@ Route::get('/clases/horarioClases', function (Request $request) {
 });
 
 
-// =====================
-// RESERVAS
-// =====================
-
-Route::get('/reservas', function () {
-    return view('reservas.reservas');
-})->name('reservas');
-
 Route::get('/reservas/gestionReservas', function () {
 
-    $reservas = Reserva::with('usuario', 'clase')->get();
+    $reservas = collect();
 
     return view('reservas.gestionReservas', compact('reservas'));
 });
 
 Route::get('/reservas/historial', function () {
 
-    $reservas = \App\Models\Reserva::with('usuario','clase')
-        ->get();
+    $reservas = collect();
+    $usuario = null;
 
-    return view('reservas.historial', compact('reservas'));
+    return view('reservas.historial', compact('reservas', 'usuario'));
 });
 
-// =====================
-// USUARIOS
-// =====================
+Route::get('/reservas/{id}', function ($id) {
+
+    $clase = Clase::find($id);
+
+    return view('reservas.reservas', compact('clase'));
+})->whereNumber('id')->name('reservas');
+
 
 Route::get('/usuarios/inicio', function () {
-    return view('inicio'); // 🔥 opcional: si lo quieres mantener también correcto
+    return view('inicio'); 
 })->name('usuarios.inicio');
 
 Route::get('/usuariosVista', function () {

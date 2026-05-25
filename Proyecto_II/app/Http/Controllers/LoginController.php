@@ -15,7 +15,7 @@ class LoginController extends Controller
             'password' => 'required|string'
         ]);
 
-        $usuario = Usuario::with('rol') // 🔥 importante para frontend
+        $usuario = Usuario::with('rol') 
             ->where('userName', $request->userName)
             ->first();
 

@@ -29,6 +29,13 @@ class ClaseController extends Controller
             'capacidad'   => 'required|integer|min:1'
         ]);
 
+        if ($this->existeClaseEnHorario($validated['diaSemana'], $validated['horario'])) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Ya existe una clase programada para ese dia y hora'
+            ], 422);
+        }
+
         $clase = Clase::create($validated);
 
         return response()->json([
@@ -59,6 +66,16 @@ class ClaseController extends Controller
             'capacidad'   => 'sometimes|required|integer|min:1'
         ]);
 
+        $diaSemana = $validated['diaSemana'] ?? $clase->diaSemana;
+        $horario = $validated['horario'] ?? $clase->horario->format('H:i');
+
+        if ($this->existeClaseEnHorario($diaSemana, $horario, $clase->idClase)) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Ya existe una clase programada para ese dia y hora'
+            ], 422);
+        }
+
         $clase->update($validated);
 
         return response()->json([
@@ -76,5 +93,17 @@ class ClaseController extends Controller
             'success' => true,
             'message' => 'Clase eliminada correctamente'
         ]);
+    }
+
+    private function existeClaseEnHorario(string $diaSemana, string $horario, ?int $exceptoIdClase = null): bool
+    {
+        $query = Clase::where('diaSemana', $diaSemana)
+            ->where('horario', $horario);
+
+        if ($exceptoIdClase) {
+            $query->where('idClase', '!=', $exceptoIdClase);
+        }
+
+        return $query->exists();
     }
 }

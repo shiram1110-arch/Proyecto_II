@@ -92,17 +92,10 @@
             cargarClases();
         });
 
-        // =========================
-        // CARGAR CLASES (API)
-        // =========================
         async function cargarClases() {
 
             try {
-                const res = await fetch('/api/clases', {
-                    headers: {
-                        'Accept': 'application/json'
-                    }
-                });
+                const res = await authFetch('/clases');
 
                 const json = await res.json();
 
@@ -115,9 +108,6 @@
             }
         }
 
-        // =========================
-        // RENDER TABLA
-        // =========================
         function render(data) {
 
             const tbody = document.getElementById("tbodyClases");
@@ -153,19 +143,13 @@
             });
         }
 
-        // =========================
-        // ELIMINAR (API)
-        // =========================
         async function eliminarClase(id) {
 
             if (!confirm("¿Seguro que deseas eliminar esta clase?")) return;
 
             try {
-                const res = await fetch(`/api/clases/${id}`, {
-                    method: "DELETE",
-                    headers: {
-                        'Accept': 'application/json'
-                    }
+                const res = await authFetch(`/clases/${id}`, {
+                    method: "DELETE"
                 });
 
                 if (!res.ok) throw new Error("Error al eliminar");
@@ -179,9 +163,6 @@
             }
         }
 
-        // =========================
-        // BUSCADOR (FRONTEND)
-        // =========================
         document.getElementById("buscador").addEventListener("keyup", (e) => {
 
             const texto = e.target.value.toLowerCase();
